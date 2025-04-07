@@ -1,0 +1,50 @@
+[
+  {
+    "id_usuari": 1,
+    "nom": "Juan",
+    "cognom": "Pérez",
+    "email": "juan.perez@example.com",
+    "pass": "password123",
+    "rol": "Superadmin"
+  },
+  {
+    "id_usuari": 2,
+    "nom": "Ana",
+    "cognom": "Gómez",
+    "email": "ana.gomez@example.com",
+    "pass": "securePass1",
+    "rol": "Event Organizer"
+  },
+  {
+    "id_usuari": 3,
+    "nom": "Carlos",
+    "cognom": "López",
+    "email": "carlos.lopez@example.com",
+    "pass": "myPass987",
+    "rol": "Common User"
+  },
+  {
+    "id_usuari": 4,
+    "nom": "Maria",
+    "cognom": "Martínez",
+    "email": "maria.martinez@example.com",
+    "pass": "admin1234",
+    "rol": "Superadmin"
+  },
+  {
+    "id_usuari": 5,
+    "nom": "Luis",
+    "cognom": "Sánchez",
+    "email": "luis.sanchez@example.com",
+    "pass": "user12345",
+    "rol": "Event Organizer"
+  },
+  {
+    "id_usuari": 6,
+    "nom": "Isabel",
+    "cognom": "Fernández",
+    "email": "isabel.fernandez@example.com",
+    "pass": "password321",
+    "rol": "Common User"
+  }
+]

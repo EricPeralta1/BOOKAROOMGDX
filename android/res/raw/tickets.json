@@ -1,0 +1,77 @@
+
+ [
+    {
+      "id_entrada": 1,
+      "id_usuari": 101,
+      "id_esdeveniment": 1,
+      "id_butaca": 10,
+      "estat": 0
+    },
+    {
+      "id_entrada": 2,
+      "id_usuari": 102,
+      "id_esdeveniment": 2,
+      "id_butaca": 12,
+      "estat": 1
+
+    },
+    {
+      "id_entrada": 3,
+      "id_usuari": 103,
+      "id_esdeveniment": 3,
+      "id_butaca": 15,
+      "estat" : 1
+    },
+    {
+      "id_entrada": 4,
+      "id_usuari": 104,
+      "id_esdeveniment": 4,
+      "id_butaca": 8,
+      "estat": 0
+    },
+    {
+      "id_entrada": 5,
+      "id_usuari": 105,
+      "id_esdeveniment": 5,
+      "id_butaca": 20,
+      "estat": 0
+
+    },
+    {
+      "id_entrada": 6,
+      "id_usuari": 106,
+      "id_esdeveniment": 1,
+      "id_butaca": 7,
+      "estat": 1
+    },
+    {
+      "id_entrada": 7,
+      "id_usuari": 107,
+      "id_esdeveniment": 2,
+      "id_butaca": 11,
+      "estat": 0
+    },
+    {
+      "id_entrada": 8,
+      "id_usuari": 108,
+      "id_esdeveniment": 3,
+      "id_butaca": 13,
+      "estat": 0
+
+    },
+    {
+      "id_entrada": 9,
+      "id_usuari": 109,
+      "id_esdeveniment": 4,
+      "id_butaca": 18,
+      "estat": 1
+    },
+    {
+      "id_entrada": 10,
+      "id_usuari": 110,
+      "id_esdeveniment": 5,
+      "id_butaca": 25,
+      "estat": 1
+    }
+   ]
+

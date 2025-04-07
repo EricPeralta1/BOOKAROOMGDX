@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TransparentDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
+    <item name="android:background">#80000000</item> <!-- Negro con 50% de opacidad -->
+</style></resources>

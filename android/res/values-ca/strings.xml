@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bookaroom</string>
+    <string name="SelectButaca">SELECCIONA BUTACA</string>
+    <string name="selectedButacaString">"HAS ESCOLLIT: BUTACA "</string>
+    <string name="makeReservation">REALITZAR RESERVA</string>
+    <string name="cancelReservation">CANCELAR RESERVA</string>
+    <string name="search_hint">Escriu aqui...</string>
+    <string name="price">PREU</string>
+    <string name="start_date">DATA INICI</string>
+    <string name="select_date">Escull dia...</string>
+    <string name="end_date">DATA FI</string>
+    <string name="chat_rules">Llegeix a continuació les normes abans d\'entrar al xat. \n 1. No insultis, ni faltis al respecte. \n 2. No diguis coses subides de to, mantenim un bon ambient. \n 3. Divirteix-te!</string>
+    <string name="accept">ACCEPTO</string>
+    <string name="deny">NO ACCEPTO</string>
+    <string name="chat_hint">Escriu el teu missatge</string>
+    <string name="inventory_hint">Selecciona un ticket per a veure els seus detalls</string>
+    <string name="description">DESCRIPCIÓ</string>
+    <string name="cancelTicket">CANCELAR TICKET</string>
+    <string name="BeCareful">VES AMB COMPTE</string>
+    <string name="warningDetails">Al cancelar la reseva, aquesta acció serà irrevesible. \\n \\n Pensa-ho bé abans de continuar.</string>
+    <string name="warningAccept">Ho entenc i vull continuar</string>
+    <string name="createEventTitle">CREACIÓ D\'EVENTS</string>
+    <string name="createEventRules">Benvingut! Recorda crear un event al que tothom pugi participar. Sort!</string>
+    <string name="checknotaccept">Accepta els termes per a poder cancelar la teva reserva, siusplau.</string>
+</resources>

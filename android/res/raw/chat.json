@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "id_enviar": 1,
+    "mensaje": "Hola, ¿cómo estás?",
+    "data_enviar": "2025-04-01T09:15:00",
+    "estat": "sent"
+  },
+  {
+    "id": 2,
+    "id_enviar": 2,
+    "mensaje": "Reunión a las 3 PM, no faltes.",
+    "data_enviar": "2025-04-01T09:45:00",
+    "estat": "sent"
+  },
+  {
+    "id": 3,
+    "id_enviar": 3,
+    "mensaje": "¿Me puedes enviar el reporte de ayer?",
+    "data_enviar": "2025-04-01T10:00:00",
+    "estat": "sent"
+  },
+  {
+    "id": 4,
+    "id_enviar": 4,
+    "mensaje": "Ayer se resolvió el problema, gracias.",
+    "data_enviar": "2025-04-01T10:30:00",
+    "estat": "sent"
+  },
+  {
+    "id": 5,
+    "id_enviar": 5,
+    "mensaje": "¿Vas a estar en la oficina mañana?",
+    "data_enviar": "2025-04-01T11:00:00",
+    "estat": "sent"
+  },
+  {
+    "id": 6,
+    "id_enviar": 6,
+    "mensaje": "Te espero en la sala de reuniones a las 2 PM.",
+    "data_enviar": "2025-04-01T11:15:00",
+    "estat": "sent"
+  }
+]

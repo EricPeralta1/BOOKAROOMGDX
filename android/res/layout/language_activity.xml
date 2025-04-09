@@ -7,15 +7,14 @@
     android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout11"
         android:layout_width="00dp"
         android:layout_height="200dp"
         android:layout_marginTop="44dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <ImageView
@@ -54,7 +53,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout17"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout11"
+        app:layout_constraintVertical_bias="0.629">
 
         <ImageView
             android:id="@+id/imageView7"
@@ -78,44 +79,45 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <RadioButton
-        android:id="@+id/englishLang"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout17"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="276dp"
-        android:gravity="center"
-        android:paddingLeft="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.255"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout19" />
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout19"
+        app:layout_constraintStart_toStartOf="parent">
 
-    <RadioButton
-        android:id="@+id/spainLang"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
-        app:layout_constraintBottom_toTopOf="@+id/catalanLang"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.255"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout16" />
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/catalan_ic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <RadioButton
-        android:id="@+id/catalanLang"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        app:layout_constraintBottom_toTopOf="@+id/englishLang"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.255"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout17" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/outfit_light"
+            android:text="Catalán"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.24"
+            app:layout_constraintStart_toEndOf="@+id/imageView8"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.506" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout19"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="252dp"
+        android:layout_marginBottom="228dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -143,38 +145,37 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout17"
-        android:layout_width="300dp"
+    <RadioButton
+        android:id="@+id/catalanLang"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout19"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_marginBottom="92dp"
+        app:layout_constraintBottom_toTopOf="@+id/englishLang"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.255"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout17" />
 
-        <ImageView
-            android:id="@+id/imageView8"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:background="@drawable/catalan_ic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <RadioButton
+        android:id="@+id/spainLang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="96dp"
+        app:layout_constraintBottom_toTopOf="@+id/catalanLang"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.255"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout16" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/outfit_light"
-            android:text="Catalán"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.24"
-            app:layout_constraintStart_toEndOf="@+id/imageView8"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.506" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <RadioButton
+        android:id="@+id/englishLang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="252dp"
+        android:gravity="center"
+        android:paddingLeft="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.255"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout19" />
 
     <include
         android:id="@+id/navigationBarLayout"

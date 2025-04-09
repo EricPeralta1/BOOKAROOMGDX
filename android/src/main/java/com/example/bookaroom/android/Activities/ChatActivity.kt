@@ -23,8 +23,11 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStreamReader
+import java.io.ObjectOutputStream
 import java.io.OutputStreamWriter
+import java.net.Socket
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
@@ -32,6 +35,7 @@ import java.util.Date
 class ChatActivity : AppCompatActivity() {
 
     private lateinit var user : User
+    private lateinit var socket : Socket
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +51,6 @@ class ChatActivity : AppCompatActivity() {
         send.setOnClickListener {
             sendMessage()
             val messageText = findViewById<EditText>(R.id.sendMessageEditText).text.clear()
-
         }
     }
 
@@ -58,25 +61,32 @@ class ChatActivity : AppCompatActivity() {
 
         val date = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant())
 
-        val file = File(this.filesDir, "chat.json")
-        var chatMessages: MutableList<Message> = mutableListOf()
+        try {
+            socket = Socket("localhost", 6102)
+            val messageObject = Message(users.size+1, users[0].getIdUser(), messageText.toString(), date, "sent")
 
-        if (file.exists()) {
-            val inputStream = FileInputStream(file)
-            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-            val jsonText = bufferedReader.use { it.readText() }
-
-            val gson = Gson()
-            val projectObjects = object : TypeToken<List<Message>>() {}.type
-            chatMessages = gson.fromJson(jsonText, projectObjects)
-        } else {
-            chatMessages = loadChatFromJSON(loadJsonFromRaw(this, R.raw.chat)!!)
+            val out = ObjectOutputStream(socket.outputStream)
+            out.writeObject(messageObject)
+            out.flush()
+        }catch (exception : IOException){
+            exception.toString()
         }
-        val messageObject = Message(users.size+1, users[0].getIdUser(), messageText.toString(), date, "sent")
-        chatMessages.add(messageObject)
 
-        saveChatToJSON(chatMessages)
 
+        //val file = File(this.filesDir, "chat.json")
+        //var chatMessages: MutableList<Message> = mutableListOf()
+        //if (file.exists()) {
+        //    val inputStream = FileInputStream(file)
+        //    val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+        //    val jsonText = bufferedReader.use { it.readText() }
+        //    val gson = Gson()
+        //    val projectObjects = object : TypeToken<List<Message>>() {}.type
+        //    chatMessages = gson.fromJson(jsonText, projectObjects)
+        //} else {
+        //    chatMessages = loadChatFromJSON(loadJsonFromRaw(this, R.raw.chat)!!)
+        //}
+        //chatMessages.add(messageObject)
+        //saveChatToJSON(chatMessages)
     }
 
     private fun saveChatToJSON(chatMessages: List<Message>) {
@@ -99,22 +109,22 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun updateChat() {
-        val updateThread = object : Thread() {
-            override fun run() {
-                while (!isInterrupted) {
-                    try {
-                        runOnUiThread {
-                            loadChat()
-                        }
-                        sleep(1000)
-                    } catch (e: InterruptedException) {
-                        break
-                    }
-                }
-            }
+        socket = Socket("localhost", 6101)
+
+        val inputStream = socket.getInputStream()
+
+        val reader = BufferedReader(InputStreamReader(inputStream))
+
+        val response = StringBuilder()
+        var line: String?
+        while (reader.readLine().also { line = it } != null) {
+            response.append(line).append("\n")
         }
 
-        updateThread.start()    }
+        socket.close()
+
+        val jsonMessages = response.toString()
+    }
 
     private fun loadChat() {
         val file = File(this.filesDir, "chat.json")

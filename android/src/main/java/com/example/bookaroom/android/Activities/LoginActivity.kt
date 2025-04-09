@@ -20,15 +20,17 @@ class LoginActivity : AppCompatActivity() {
         loginButton.setOnClickListener {
             checkLoginDetails()
         }
+
+
+
         forgotPasswordClick()
         makeAccountClick()
     }
 
     private fun makeAccountClick() {
-        val makeAccount = findViewById<TextView>(R.id.makeAccountBtn)
-
-        makeAccount.setOnClickListener {
-            val intent = Intent(this, NewUserActivity::class.java)
+        val createAccount = findViewById<TextView>(R.id.makeAccountBtn)
+        createAccount.setOnClickListener {
+            val intent = Intent(this, CreateAccountActivity::class.java)
             startActivity(intent)
             finish()
         }

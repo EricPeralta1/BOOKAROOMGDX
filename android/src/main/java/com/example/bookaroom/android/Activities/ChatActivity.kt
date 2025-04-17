@@ -19,6 +19,7 @@ import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.Objects.loadUsersFromJSON
 import com.example.bookaroom.R
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -36,12 +37,18 @@ import java.io.OutputStreamWriter
 import java.net.Socket
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.util.Date
 
 class ChatActivity : AppCompatActivity() {
 
-    private lateinit var user : User
-    private lateinit var socket : Socket
+    private lateinit var user: User
+    private lateinit var socket: Socket
+    private lateinit var ois: ObjectInputStream
+    private lateinit var oos: ObjectOutputStream
+    private val chatMessages = mutableListOf<Message>()
+    private lateinit var messagesAdapter: ChatAdapter
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,71 +60,71 @@ class ChatActivity : AppCompatActivity() {
         activateNavBar()
         showChatWarning()
         loadChat()
+        setupSocket()
+
         val send = findViewById<ImageView>(R.id.sendIc)
         send.setOnClickListener {
             sendMessage()
-            val messageText = findViewById<EditText>(R.id.sendMessageEditText).text.clear()
+        }
+    }
+
+    private fun setupSocket() {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                socket = Socket("10.0.2.2", 6103)
+                oos = ObjectOutputStream(socket.outputStream)
+                oos.flush()
+                ois = ObjectInputStream(socket.inputStream)
+
+                while (true) {
+                    val messageJson = ois.readObject() as String
+                    val gson = Gson()
+                    val updatedMessages = gson.fromJson(messageJson, Array<Message>::class.java).toList()
+
+                    withContext(Dispatchers.Main) {
+                        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewMessages)
+                        recyclerView.layoutManager = LinearLayoutManager(this@ChatActivity)
+                        val users = loadUsersFromJSON(loadJsonFromRaw(this@ChatActivity, R.raw.users)!!)
+                        val messagesAdapter = ChatAdapter(updatedMessages, users)
+                        recyclerView.adapter = messagesAdapter
+                        recyclerView.scrollToPosition(updatedMessages.size - 1)
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
     private fun sendMessage() {
-        val messageText = findViewById<EditText>(R.id.sendMessageEditText).text
-        val users = loadUsersFromJSON(loadJsonFromRaw(this, R.raw.users)!!)
-        val currentDateTime = LocalDateTime.now()
-
-        val date = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant())
-
         try {
-            GlobalScope.launch(Dispatchers.Main) {
+            GlobalScope.launch(Dispatchers.IO) {
                 try {
-                    withContext(Dispatchers.IO) {
+                    val messageText = findViewById<EditText>(R.id.sendMessageEditText).text.toString()
+                    val users = loadUsersFromJSON(loadJsonFromRaw(this@ChatActivity, R.raw.users)!!)
+                    val currentDateTime = LocalDateTime.now()
+                    val zonedDateTime = currentDateTime.atZone(ZoneOffset.UTC)
+                    val date = Date.from(zonedDateTime.toInstant())
 
-                        socket = Socket("10.0.2.2", 6103)
-                        val messageObject = Message(users.size+1, users[0].getIdUser(), messageText.toString(), date, "sent")
+                    val messageObject = Message(1, users[0].getIdUser(), messageText, date, "sent")
+                    val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create()
 
-                        val out = ObjectOutputStream(socket.outputStream)
-                        val gson = Gson()
-                        val messageJson = gson.toJson(messageObject)
-                        out.writeObject(messageJson)
-                        out.flush()
+                    val messageJson = gson.toJson(messageObject)
 
-                        val inputSt = ObjectInputStream(socket.inputStream)
-                        val receivedJson = inputSt.readObject() as String
-                        val receivedMessage = gson.fromJson(receivedJson, Message::class.java)
+                    oos.writeObject(messageJson)
+                    oos.flush()
 
-                        val users = loadUsersFromJSON(loadJsonFromRaw(this as Context, R.raw.users)!!)
-
-                        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewMessages)
-                        recyclerView.layoutManager = LinearLayoutManager(this)
-
-                        val updatedMessages = listOf(receivedMessage)
-                        val messagesAdapter = ChatAdapter(updatedMessages, users)
-                        recyclerView.adapter = messagesAdapter
-                        recyclerView.scrollToPosition(updatedMessages.size - 1)
+                    withContext(Dispatchers.Main) {
+                        val messageTextEdit = findViewById<EditText>(R.id.sendMessageEditText)
+                        messageTextEdit.text.clear()
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
-        }catch (exception : IOException){
-            exception.toString()
+        } catch (exception: IOException) {
+            exception.printStackTrace()
         }
-
-
-        //val file = File(this.filesDir, "chat.json")
-        //var chatMessages: MutableList<Message> = mutableListOf()
-        //if (file.exists()) {
-        //    val inputStream = FileInputStream(file)
-        //    val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-        //    val jsonText = bufferedReader.use { it.readText() }
-        //    val gson = Gson()
-        //    val projectObjects = object : TypeToken<List<Message>>() {}.type
-        //    chatMessages = gson.fromJson(jsonText, projectObjects)
-        //} else {
-        //    chatMessages = loadChatFromJSON(loadJsonFromRaw(this, R.raw.chat)!!)
-        //}
-        //chatMessages.add(messageObject)
-        //saveChatToJSON(chatMessages)
     }
 
     private fun saveChatToJSON(chatMessages: List<Message>) {

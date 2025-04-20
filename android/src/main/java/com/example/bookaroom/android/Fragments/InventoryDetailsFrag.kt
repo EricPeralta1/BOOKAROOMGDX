@@ -30,6 +30,9 @@ class InventoryDetailsFrag  : Fragment() {
         cancelTicket(selectedEvent)
     }
 
+    /**
+     * Al hacer clic en cancelar ticket, muestra el fragment de cancelar ticket.
+     */
     private fun cancelTicket(ticket: Ticket) {
         val cancelButton = view?.findViewById<TextView>(R.id.cancelTicketButton)
 
@@ -52,6 +55,9 @@ class InventoryDetailsFrag  : Fragment() {
         }
     }
 
+    /**
+     * Muestra los detalles del ticket seleccionado en el recyclerView superior.
+     */
     private fun chargeDetails(ticket: Ticket) {
         val events = loadEventsFromJSON(loadJsonFromRaw(requireContext(), R.raw.events)!!)
         val event = events.find { it.id_esdeveniment == ticket.getIdEvent() }

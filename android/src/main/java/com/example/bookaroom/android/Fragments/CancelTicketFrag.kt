@@ -45,6 +45,9 @@ class CancelTicketFrag  : Fragment() {
         initializeButton(selectedEvent)
     }
 
+    /**
+     * Permite cancelar la reserva. Comprueba que se hayan aceptado los términos antes de proceder.
+     */
     private fun initializeButton(ticket: Ticket) {
         val acceptCancel = view?.findViewById<TextView>(R.id.cancelReservaButton)!!
         val backButton = view?.findViewById<TextView>(R.id.BackInventoryButton)!!
@@ -74,6 +77,9 @@ class CancelTicketFrag  : Fragment() {
         }
     }
 
+    /**
+     * Deshabilita el ticket seleccionado.
+     */
     private fun disableTicket(ticket : Ticket) {
         val file = File(requireActivity().filesDir, "ticket.json")
         val tickets: MutableList<Ticket>
@@ -124,6 +130,9 @@ class CancelTicketFrag  : Fragment() {
         }
     }
 
+    /**
+     * Actualiza el recyclerView para mostrar los tickets actuales.
+     */
     private fun updateRecycler() {
         val recyclerView = activity?.findViewById<RecyclerView>(R.id.recyclerView)!!
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -153,6 +162,9 @@ class CancelTicketFrag  : Fragment() {
         recyclerView.adapter = ticketAdapter
     }
 
+    /**
+     * Devuelve una lista con los tickets activos.
+     */
     private fun chargeActivatedTickets(ticketList : ArrayList<Ticket>) : ArrayList<Ticket>{
         val activatedTickets : ArrayList<Ticket> = ArrayList()
 
@@ -165,6 +177,9 @@ class CancelTicketFrag  : Fragment() {
         return activatedTickets
     }
 
+    /**
+     * Al hacer clic en un ticket, muestra sus detalles.
+     */
     private fun onTicketClick(ticket: Ticket) {
         val detailsTicketFrag = InventoryDetailsFrag()
         val bundle = Bundle()
@@ -177,6 +192,9 @@ class CancelTicketFrag  : Fragment() {
             .commit()
     }
 
+    /**
+     * Reseta la vista del ticket seleccionado y muestra la pantalla por defecto.
+     */
     private fun resetSelection() {
         val noDetailsFrag = EmptyInventoryFrag()
 

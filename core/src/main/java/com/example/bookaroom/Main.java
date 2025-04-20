@@ -17,6 +17,11 @@ public class Main extends ApplicationAdapter {
     private int rows = 6, cols = 7;
     private float seatSize = 80;
 
+
+    /**
+     * Permite generar las columnas de asientos y filas de la sala. Además, aplica el estado
+     * que tengan asignado los asientos.
+     */
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -49,6 +54,9 @@ public class Main extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Permite renderizar y dibujar los asientos en pantalla.
+     */
     @Override
     public void render() {
         ScreenUtils.clear(254f / 255f, 250f / 255f, 224f / 255f, 1);

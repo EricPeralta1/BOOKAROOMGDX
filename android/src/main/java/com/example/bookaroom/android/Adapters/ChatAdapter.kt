@@ -12,6 +12,9 @@ import com.example.bookaroom.Objects.loadEventsFromJSON
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.R
 
+/**
+ * Adapter que permite cargar el formato del chat.
+ */
 class ChatAdapter(private val messageList: List<Message>, private val users : List<User>) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
     class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

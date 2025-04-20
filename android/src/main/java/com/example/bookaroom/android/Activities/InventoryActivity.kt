@@ -40,6 +40,9 @@ class InventoryActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Muestra la lista de reservas que el usuario posea.
+     */
     private fun showCurrentReservas() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -71,6 +74,9 @@ class InventoryActivity : AppCompatActivity() {
         recyclerView.adapter = ticketAdapter
     }
 
+    /**
+     * Permite cargar solo aquellas reservas que esten activas.
+     */
     private fun chargeActivatedTickets(ticketList : ArrayList<Ticket>) : ArrayList<Ticket>{
         val activatedTickets : ArrayList<Ticket> = ArrayList()
 
@@ -83,6 +89,9 @@ class InventoryActivity : AppCompatActivity() {
         return activatedTickets
     }
 
+    /**
+     * Al hacer clic en una reserva, se abre un fragment el cual muestra sus detalles.
+     */
     private fun onTicketClick(ticket: Ticket) {
         val detailsTicketFrag = InventoryDetailsFrag()
         val bundle = Bundle()
@@ -95,6 +104,10 @@ class InventoryActivity : AppCompatActivity() {
             .commit()
     }
 
+    /**
+     * Por defecto, el fragment mostrarà un mensaje indicando que el usuario
+     * debe elegir una reserva para ver sus detalles.
+     */
     private fun initializeFragment() {
         val noDetailsFrag = EmptyInventoryFrag()
 
@@ -104,6 +117,9 @@ class InventoryActivity : AppCompatActivity() {
             .commit()
     }
 
+    /**
+     * Activa la barra de navegación inferior.
+     */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)

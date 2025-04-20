@@ -15,6 +15,9 @@ import com.example.bookaroom.Objects.Room
 import com.example.bookaroom.Objects.Ticket
 import com.example.bookaroom.R
 
+/**
+ * Adapter utilizado para cargar los tickets del inventario.
+ */
 class TicketAdapter(private val reservas: List<Ticket>, private val events : List<Event>, private val context: Context, private val onItemClick: (Ticket) -> Unit) : RecyclerView.Adapter<TicketAdapter.TicketViewHolder>() {
 
     class TicketViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

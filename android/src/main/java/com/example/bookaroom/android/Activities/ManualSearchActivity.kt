@@ -68,6 +68,9 @@ class ManualSearchActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inicializa los calendarios para seleccionar las fechas de inicio y fin del evento.
+     */
     private fun initializeCalendars() {
         val startDate = findViewById<TextView>(R.id.selectStartDate)
         val endDate = findViewById<TextView>(R.id.SelectEndDate)
@@ -84,6 +87,10 @@ class ManualSearchActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Inicia SeekBar, una barra deslizante que permite seleccionar el precio según el valor
+     * que tenga la barra.
+     */
     private fun initializeSeekBar() {
         val seekBar = findViewById<SeekBar>(R.id.seekBarSearch)
         seekBar.max = 150
@@ -105,6 +112,10 @@ class ManualSearchActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Actualiza la lista de eventos según los filtros seleccionados por el usuario. Comprueba que
+     * campos estan llenos o alterados y busca según esos datos.
+     */
     private fun updateEventList(startDate : String, endDate : String, eventName: String, price: Int){
         val eventList = (loadEventsFromJSON(loadJsonFromRaw(this, R.raw.events)!!))
         var filteredEventList : ArrayList<Event> = ArrayList()
@@ -173,6 +184,9 @@ class ManualSearchActivity : AppCompatActivity() {
         recyclerView.adapter = eventAdapter
     }
 
+    /**
+     * Carga la lista de eventos en el RecyclerView.
+     */
     private fun loadEvents() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -186,6 +200,9 @@ class ManualSearchActivity : AppCompatActivity() {
         recyclerView.adapter = eventAdapter
     }
 
+    /**
+     * Al hacer clic en un evento, se muestran sus detalles.
+     */
     private fun onEventClick(event: Event) {
         val eventDetailsFrag = EventDetailsFrag()
         val bundle = Bundle()
@@ -204,6 +221,9 @@ class ManualSearchActivity : AppCompatActivity() {
         fragment.visibility = View.VISIBLE
     }
 
+    /**
+     * Activa la barra de navegacion
+     */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)

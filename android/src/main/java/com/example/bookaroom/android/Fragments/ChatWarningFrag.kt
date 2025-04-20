@@ -27,6 +27,10 @@ class ChatWarningFrag : Fragment() {
         initializeButton()
     }
 
+    /**
+     * Es la sección de aceptar términos del chat, si se aceptan, se puede acceder, sino se
+     * devuelve a la pantalla inicial.
+     */
     private fun initializeButton() {
         val acceptWarning = view?.findViewById<TextView>(R.id.accept_agreement_bt)!!
         val notAcceptWarning = view?.findViewById<TextView>(R.id.cancel_agreement_bt)!!

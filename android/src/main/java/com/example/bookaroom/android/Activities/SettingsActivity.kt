@@ -27,6 +27,9 @@ class SettingsActivity : AppCompatActivity() {
         activateOptions()
     }
 
+    /**
+     * Activa las opciones del menú.
+     */
     private fun activateOptions() {
         val editUser = findViewById<ConstraintLayout>(R.id.editUserButton)
         val changeLanguage = findViewById<ConstraintLayout>(R.id.changeLangButton)
@@ -54,6 +57,9 @@ class SettingsActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Inicializa la barra de navegación inferior.
+     */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)

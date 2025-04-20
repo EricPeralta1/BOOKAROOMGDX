@@ -13,6 +13,9 @@ import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.R
 
 
+/**
+ * Adapter utilizado para cargar las listas de eventos.
+ */
 class EventAdapter(private val eventList: List<Event>, private val context: Context, private val onItemClick: (Event) -> Unit) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

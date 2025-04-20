@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.R
+import com.google.gson.Gson
 
 class EditUserActivity  : AppCompatActivity() {
     private lateinit var user : User
@@ -25,17 +26,38 @@ class EditUserActivity  : AppCompatActivity() {
 
     }
 
+    /**
+     * Permite guardar los cambios realizados a un usuario.
+     */
     private fun saveEdition() {
-        val name: String = findViewById<EditText>(R.id.nameEditText).text.toString()
-        val surname: String = findViewById<EditText>(R.id.aforamentEditText).text.toString()
-        val startDate: String = findViewById<EditText>(R.id.startDateET).text.toString()
-        val endDate: String = findViewById<EditText>(R.id.endDateET).text.toString()
-        val sala: String = findViewById<EditText>(R.id.salaET).text.toString()
-        val preu: Int = findViewById<EditText>(R.id.priceET).text.toString().toInt()
+        val name : String = findViewById<EditText>(R.id.nameEditText).text.toString()
+        val surname : String = findViewById<EditText>(R.id.surnameEditText).text.toString()
+        val email : String = findViewById<EditText>(R.id.emailEditText).text.toString()
+        val pass : String = findViewById<EditText>(R.id.endDateET).text.toString()
+        val confirmPass : String = findViewById<EditText>(R.id.confirmPasswordEditText).text.toString()
 
+        val editedUser = user
+        if (!name.isEmpty()){
+            editedUser.setNom(name)
+        }
+        if(!surname.isEmpty()){
+            editedUser.setCognom(surname)
+        }
+        if (!email.isEmpty()){
+            editedUser.setEmail(email)
+        }
+        if (!pass.isEmpty() && pass == confirmPass){
+            editedUser.setPass(pass)
+        }
 
+        val gson = Gson()
+        val userJSON = gson.toJson(user)
+        userJSON.toString()
     }
 
+    /**
+     * Activa la barra de navegación inferior.
+     */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)

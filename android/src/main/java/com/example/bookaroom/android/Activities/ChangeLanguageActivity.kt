@@ -22,6 +22,9 @@ class ChangeLanguageActivity  : AppCompatActivity() {
         changeLanguage()
     }
 
+    /**
+     * Permite cambiar el idioma de la app según el botón elegido.
+     */
     private fun changeLanguage() {
         val spanishButton = findViewById<RadioButton>(R.id.spainLang)
         val englishButton = findViewById<RadioButton>(R.id.englishLang)
@@ -71,6 +74,9 @@ class ChangeLanguageActivity  : AppCompatActivity() {
 
     }
 
+    /**
+     * Activa la navegación entre actividades en la barra inferior
+     */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)

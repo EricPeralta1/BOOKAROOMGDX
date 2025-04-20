@@ -26,32 +26,24 @@ class CreateEventActivity  : AppCompatActivity() {
         saveEvent()
     }
 
+    /**
+     * Guarda el evento creado.
+     */
     private fun saveEvent() {
-        val name : String = findViewById<EditText>(R.id.nameEditText).text.toString()
-        val aforament : String = findViewById<EditText>(R.id.aforamentEditText).text.toString()
-        val email : String = findViewById<EditText>(R.id.emailEditText).text.toString()
-        val pass : String = findViewById<EditText>(R.id.endDateET).text.toString()
-        val confirmPass : String = findViewById<EditText>(R.id.confirmPasswordEditText).text.toString()
+        val name: String = findViewById<EditText>(R.id.nameEditText).text.toString()
+        val aforament: String = findViewById<EditText>(R.id.surnameEditText).text.toString()
+        val startDate: String = findViewById<EditText>(R.id.startDateET).text.toString()
+        val endDate: String = findViewById<EditText>(R.id.endDateET).text.toString()
+        val sala: String = findViewById<EditText>(R.id.salaET).text.toString()
+        val preu: Int = findViewById<EditText>(R.id.priceET).text.toString().toInt()
 
-        val editedUser = user
-        if (!name.isEmpty()){
-            editedUser.setNom(name)
-        }
-        if(!aforament.isEmpty()){
-            editedUser.setCognom(aforament)
-        }
-        if (!email.isEmpty()){
-            editedUser.setEmail(email)
-        }
-        if (!pass.isEmpty() && pass == confirmPass){
-            editedUser.setPass(pass)
-        }
 
-        val gson = Gson()
-        val userJSON = gson.toJson(user)
-        userJSON.toString()
     }
 
+    /**
+     * Inicializa el calendario para seleccionas las fechas del evento. Permite que el formato devuelto sea
+     * dd/MM/yyyy.
+     */
     private fun initializeCalendars() {
         val startDate = findViewById<TextView>(R.id.startDateET)
         val endDate = findViewById<TextView>(R.id.endDateET)
@@ -68,6 +60,10 @@ class CreateEventActivity  : AppCompatActivity() {
         }
     }
 
+    /**
+     * Permite que, al hacer clic en la seleccion de fecha, se abra un calendario.
+     * Dicho calendario permite elegir una fecha y devolverla a la app.
+     */
     private fun showDatePickerDialog(textView: TextView, dateFormatter: SimpleDateFormat) {
         val calendar = Calendar.getInstance()
         DatePickerDialog(
@@ -82,6 +78,9 @@ class CreateEventActivity  : AppCompatActivity() {
                         ).show()
     }
 
+    /**
+     * Activa la barra de navegación inferior.
+     */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)

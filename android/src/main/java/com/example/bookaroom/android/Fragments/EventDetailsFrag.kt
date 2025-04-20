@@ -12,6 +12,7 @@ import com.example.bookaroom.R
 import com.example.bookaroom.android.Activities.SeatSelectionActivity
 import com.example.bookaroom.Objects.Event
 
+
 class EventDetailsFrag : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +49,9 @@ class EventDetailsFrag : Fragment() {
         loadData(selectedEvent)
     }
 
+    /**
+     * Carga los datos del evento seleccionado.
+     */
     private fun loadData(event : Event) {
         val eventTitle = view?.findViewById<TextView>(R.id.eventTitle)
         val userName = view?.findViewById<TextView>(R.id.eventUserName)

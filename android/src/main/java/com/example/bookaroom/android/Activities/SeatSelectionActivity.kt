@@ -8,6 +8,11 @@ import com.example.bookaroom.android.GDX.GameFragment
 
 
 class SeatSelectionActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks  {
+
+    /**
+     * Inicia GameFragment, el metodo de LIBGDX que permite añadir codigo de LIBGDX a
+     * una vista de la aplicación.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reserva_butaca)

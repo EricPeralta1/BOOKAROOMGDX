@@ -30,6 +30,9 @@ class SearchEventActivity : AppCompatActivity() {
         loadEvents()
     }
 
+    /**
+     * Carga los eventos en la lista.
+     */
     private fun loadEvents() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -43,6 +46,9 @@ class SearchEventActivity : AppCompatActivity() {
         recyclerView.adapter = eventAdapter
     }
 
+    /**
+     * Al hacer clic en un evento, se envia al fragment eventDetailsFrag, que muestra sus detalles.
+     */
     private fun onEventClick(event: Event) {
         val eventDetailsFrag = EventDetailsFrag()
         val bundle = Bundle()
@@ -61,6 +67,9 @@ class SearchEventActivity : AppCompatActivity() {
         fragment.visibility = View.VISIBLE
     }
 
+    /**
+     * Inicializa la barra de navegación.
+     */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)

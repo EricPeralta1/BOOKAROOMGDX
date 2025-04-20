@@ -21,12 +21,13 @@ class LoginActivity : AppCompatActivity() {
             checkLoginDetails()
         }
 
-
-
         forgotPasswordClick()
         makeAccountClick()
     }
 
+    /**
+     * Al clicar en el botón de crear cuenta, se abre la actividad de crear cuenta.
+     */
     private fun makeAccountClick() {
         val createAccount = findViewById<TextView>(R.id.makeAccountBtn)
         createAccount.setOnClickListener {
@@ -36,6 +37,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Al clicar en el botón de recuperar contraseña, se abre la actividad de recuperar contraseña.
+     */
     private fun forgotPasswordClick() {
         val forgotPass = findViewById<TextView>(R.id.forgotButtonText)
 
@@ -46,6 +50,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Comprueba que los datos introducidos por el usuario son correctos.
+     * Si lo son, se pasa a la siguiente actividad, SearchEventActivity.
+     */
     private fun checkLoginDetails() {
 
         val email = findViewById<TextView>(R.id.UsernameText)

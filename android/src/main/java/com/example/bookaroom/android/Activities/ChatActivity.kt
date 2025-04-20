@@ -68,6 +68,9 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Configura el socket para recibir mensajes del servidor de forma períodica (para actualizar los mensajes recientes)
+     */
     private fun setupSocket() {
         GlobalScope.launch(Dispatchers.IO) {
             try {
@@ -96,6 +99,9 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Envía el mensaje que nosotros escribamos al servidor.
+     */
     private fun sendMessage() {
         try {
             GlobalScope.launch(Dispatchers.IO) {
@@ -152,6 +158,9 @@ class ChatActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Carga el chat.
+     */
     private fun loadChat() {
         val file = File(this.filesDir, "chat.json")
         val chatMessages: List<Message>
@@ -178,6 +187,9 @@ class ChatActivity : AppCompatActivity() {
         recyclerView.scrollToPosition(chatMessages.size - 1)
     }
 
+    /**
+     * Muestra el fragment de aviso del chat.
+     */
     private fun showChatWarning() {
         val warningFrag = ChatWarningFrag()
 
@@ -193,6 +205,9 @@ class ChatActivity : AppCompatActivity() {
         fragment.visibility = View.VISIBLE
     }
 
+    /**
+     * Activa la navegación entre activities en la barra inferior.
+     */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)

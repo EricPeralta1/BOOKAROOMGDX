@@ -39,6 +39,11 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.util.Date
+import javax.crypto.Cipher
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 class ChatActivity : AppCompatActivity() {
 
@@ -81,8 +86,9 @@ class ChatActivity : AppCompatActivity() {
 
                 while (true) {
                     val messageJson = ois.readObject() as String
+                    val decryptedMessage = decryptData(messageJson, "unlockPassword")
                     val gson = Gson()
-                    val updatedMessages = gson.fromJson(messageJson, Array<Message>::class.java).toList()
+                    val updatedMessages = gson.fromJson(decryptedMessage, Array<Message>::class.java).toList()
 
                     withContext(Dispatchers.Main) {
                         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewMessages)
@@ -117,7 +123,9 @@ class ChatActivity : AppCompatActivity() {
 
                     val messageJson = gson.toJson(messageObject)
 
-                    oos.writeObject(messageJson)
+                    val encryptedJson = encryptData(messageJson, "unlockPassword")
+
+                    oos.writeObject(encryptedJson)
                     oos.flush()
 
                     withContext(Dispatchers.Main) {
@@ -254,6 +262,51 @@ class ChatActivity : AppCompatActivity() {
             intent.putExtra("user", user)
             startActivity(intent)
             finish()
+        }
+    }
+
+    @OptIn(ExperimentalEncodingApi::class)
+    private fun encryptData(plainText: String, key: String): String {
+        try {
+            val keyBytes = key.padEnd(32, ' ').substring(0, 32).toByteArray(Charsets.UTF_8)
+            val iv = ByteArray(16)
+
+            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+
+            val secretKeySpec = SecretKeySpec(keyBytes, "AES")
+            val ivParameterSpec = IvParameterSpec(iv)
+
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec)
+
+            val encryptedBytes = cipher.doFinal(plainText.toByteArray(Charsets.UTF_8))
+
+            return Base64.encode(encryptedBytes)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw Exception("Error al encriptar datos", e)
+        }
+    }
+
+    @OptIn(ExperimentalEncodingApi::class)
+    private fun decryptData(encryptedText: String, key: String): String {
+        try {
+            val keyBytes = key.padEnd(32, ' ').substring(0, 32).toByteArray(Charsets.UTF_8)
+            val iv = ByteArray(16)
+
+            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+
+            val secretKeySpec = SecretKeySpec(keyBytes, "AES")
+            val ivParameterSpec = IvParameterSpec(iv)
+
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec)
+
+            val encryptedBytes = Base64.decode(encryptedText)
+            val decryptedBytes = cipher.doFinal(encryptedBytes)
+
+            return String(decryptedBytes, Charsets.UTF_8)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw Exception("Error al desencriptar datos", e)
         }
     }
 }

@@ -207,6 +207,7 @@ class ManualSearchActivity : AppCompatActivity() {
         val eventDetailsFrag = EventDetailsFrag()
         val bundle = Bundle()
         bundle.putParcelable("event", event)
+        bundle.putParcelable("user", user)
         eventDetailsFrag.arguments = bundle
 
         supportFragmentManager.beginTransaction()

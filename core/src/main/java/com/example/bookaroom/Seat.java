@@ -9,6 +9,11 @@ public class Seat
     float x, y, size;
     SeatState state;
 
+    int id_seat;
+    int num_row;
+    int num_seat;
+    int id_room;
+
     /**
      * Constructor de asiento, que incluye sus coordenadas, el tamaño del cuadrado y el estado del
      * asiento (reservado o disponible.)
@@ -17,11 +22,15 @@ public class Seat
      * @param size
      * @param state
      */
-    public Seat(float x, float y, float size, SeatState state) {
+    public Seat(float x, float y, float size, SeatState state, int id_seat, int num_row, int num_seat, int id_room) {
         this.x = x;
         this.y = y;
         this.size = size;
         this.state = state;
+        this.id_seat = id_seat;
+        this.num_row = num_row;
+        this.num_seat = num_seat;
+        this.id_room = id_room;
     }
 
     /**
@@ -52,5 +61,10 @@ public class Seat
      */
     public boolean isClicked(float touchX, float touchY) {
         return touchX > x && touchX < x + size && touchY > y && touchY < y + size;
+    }
+
+    public int getNum_seat()
+    {
+        return num_seat;
     }
 }

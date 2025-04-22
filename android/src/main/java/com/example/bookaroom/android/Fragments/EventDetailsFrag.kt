@@ -11,9 +11,13 @@ import androidx.fragment.app.FragmentContainerView
 import com.example.bookaroom.R
 import com.example.bookaroom.android.Activities.SeatSelectionActivity
 import com.example.bookaroom.Objects.Event
+import com.example.bookaroom.Objects.User
 
 
 class EventDetailsFrag : Fragment() {
+
+    private lateinit var user : User
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -25,11 +29,16 @@ class EventDetailsFrag : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val dataBundle = arguments
+        var selectedEvent = dataBundle?.getParcelable<Event>("event")!!
+        var user = dataBundle.getParcelable<User>("user")!!
+
         val reservarButton : TextView? = view.findViewById(R.id.imageViewReserve)
         val cancelarReserva : TextView? = view.findViewById(R.id.imageViewCancel)
 
         reservarButton?.setOnClickListener{
             val intent = Intent(requireContext(), SeatSelectionActivity::class.java)
+            intent.putExtra("user", user)
             startActivity(intent)
             requireActivity().finish()
         }
@@ -44,8 +53,8 @@ class EventDetailsFrag : Fragment() {
 
 
 
-        val dataBundle = arguments
-        var selectedEvent = dataBundle?.getParcelable<Event>("event")!!
+
+
         loadData(selectedEvent)
     }
 

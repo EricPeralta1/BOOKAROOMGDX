@@ -1,90 +1,102 @@
-package com.example.bookaroom;
+    package com.example.bookaroom;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ScreenUtils;
-
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class Main extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private ShapeRenderer shapeRenderer;
-    private Array<Seat> seats;
-    private int rows = 6, cols = 7;
-    private float seatSize = 80;
+    import com.badlogic.gdx.ApplicationAdapter;
+    import com.badlogic.gdx.Gdx;
+    import com.badlogic.gdx.graphics.GL20;
+    import com.badlogic.gdx.graphics.Texture;
+    import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+    import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+    import com.badlogic.gdx.utils.Array;
+    import com.badlogic.gdx.utils.ScreenUtils;
 
 
-    /**
-     * Permite generar las columnas de asientos y filas de la sala. Además, aplica el estado
-     * que tengan asignado los asientos.
-     */
-    @Override
-    public void create() {
-        batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-        seats = new Array<>();
 
-        float spacing = 5f;
-        float totalWidth = cols * seatSize + (cols - 1) * spacing;
-        float totalHeight = rows * seatSize + (rows - 1) * spacing;
+    /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+    public class Main extends ApplicationAdapter {
+        private SpriteBatch batch;
+        private ShapeRenderer shapeRenderer;
+        private Array<Seat> seats;
+        private int rows = 5, cols = 6;
+        private float seatSize = 120;
+        private int i = 1;
+        private SeatSelectionNotifier notifier;
 
-        float startX = (Gdx.graphics.getWidth() - totalWidth) / 2f;
-        float startY = (Gdx.graphics.getHeight() - totalHeight) / 2f;
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                float x = startX + col * (seatSize + spacing);
-                float y = startY + (rows - 1 - row) * (seatSize + spacing); // Top to bottom
-
-                SeatState state = SeatState.AVAILABLE;
-                if ((row == 0 && col != 3) ||
-                    (row == 1 && (col == 0 || col == 6)) ||
-                    (row == 5 && col != 2 && col != 4)) {
-                    state = SeatState.RESERVED;
-                } else if (row == 0 && col == 3) {
-                    state = SeatState.SELECTED;
-                }
-
-                seats.add(new Seat(x, y, seatSize, state));
-            }
+        public Main(SeatSelectionNotifier notifier) {
+            this.notifier = notifier;
         }
-    }
 
-    /**
-     * Permite renderizar y dibujar los asientos en pantalla.
-     */
-    @Override
-    public void render() {
-        ScreenUtils.clear(254f / 255f, 250f / 255f, 224f / 255f, 1);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Seat seat : seats) {
-            seat.draw(batch, shapeRenderer);
-        }
-        shapeRenderer.end();
+        /**
+         * Permite generar las columnas de asientos y filas de la sala. Además, aplica el estado
+         * que tengan asignado los asientos.
+         */
+        @Override
+        public void create() {
+            batch = new SpriteBatch();
+            shapeRenderer = new ShapeRenderer();
+            seats = new Array<>();
 
-        if (Gdx.input.justTouched()) {
-            float touchX = Gdx.input.getX();
-            float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
+            float spacing = 5f;
+            float totalWidth = cols * seatSize + (cols - 1) * spacing;
+            float totalHeight = rows * seatSize + (rows - 1) * spacing;
 
-            for (Seat seat : seats) {
-                if (seat.state == SeatState.AVAILABLE && seat.isClicked(touchX, touchY)) {
-                    for (Seat s : seats) {
-                        if (s.state == SeatState.SELECTED) s.state = SeatState.AVAILABLE;
+            float startX = (Gdx.graphics.getWidth() - totalWidth) / 2f;
+            float startY = (Gdx.graphics.getHeight() - totalHeight) / 2f;
+
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    float x = startX + col * (seatSize + spacing);
+                    float y = startY + (rows - 1 - row) * (seatSize + spacing); // Top to bottom
+
+                    SeatState state = SeatState.AVAILABLE;
+                    if ((row == 0 && col != 3) ||
+                        (row == 1 && (col == 0 || col == 6)) ||
+                        (row == 5 && col != 2 && col != 4)) {
+                        state = SeatState.RESERVED;
+                    } else if (row == 0 && col == 3) {
+                        state = SeatState.SELECTED;
                     }
-                    seat.state = SeatState.SELECTED;
-                    break;
+
+                    seats.add(new Seat(x, y, seatSize, state, 1, 1, i, 1));
+                    i++;
                 }
             }
         }
-    }
 
-    @Override
-    public void dispose() {
-        batch.dispose();
-        shapeRenderer.dispose();
+        /**
+         * Permite renderizar y dibujar los asientos en pantalla.
+         */
+        @Override
+        public void render() {
+            ScreenUtils.clear(254f / 255f, 250f / 255f, 224f / 255f, 1);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            for (Seat seat : seats) {
+                seat.draw(batch, shapeRenderer);
+            }
+            shapeRenderer.end();
+
+            if (Gdx.input.justTouched()) {
+                float touchX = Gdx.input.getX();
+                float touchY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+                for (Seat seat : seats) {
+                    if (seat.state == SeatState.AVAILABLE && seat.isClicked(touchX, touchY)) {
+                        for (Seat s : seats) {
+                            if (s.state == SeatState.SELECTED) s.state = SeatState.AVAILABLE;
+                        }
+                        seat.state = SeatState.SELECTED;
+
+                        if (notifier != null) {
+                            notifier.notifySeatSelected(seat.getNum_seat());
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void dispose() {
+            batch.dispose();
+            shapeRenderer.dispose();
+        }
     }
-}

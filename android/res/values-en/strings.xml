@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Bookaroom</string>
     <string name="SelectButaca">SELECT SEAT</string>
-    <string name="selectedButacaString">YOU\'VE SELECTED: SEAT</string>
+    <string name="selectedButacaString">"YOU'VE SELECTED: SEAT "</string>
     <string name="makeReservation">MAKE RESERVATION</string>
     <string name="cancelReservation">CANCEL RESERVATION</string>
     <string name="search_hint">Write here...</string>
@@ -23,4 +23,5 @@
     <string name="createEventTitle">EVENT CREATION</string>
     <string name="createEventRules">Welcome!  Remember to make an event anyone can the part in. Good luck!</string>
     <string name="checknotaccept">Accept the terms before being able to cancel the reservation, please.</string>
+    <string name="passwordNotSame">Passwords don\'t match.</string>
 </resources>

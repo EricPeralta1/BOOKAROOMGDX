@@ -185,7 +185,7 @@ class ManualSearchActivity : AppCompatActivity() {
 
             if (endDate.isNotEmpty()) {
                 try {
-                    val filterStartDate = dateFormat.parse(startDate)
+                    val filterStartDate = dateFormat.parse(endDate)
 
                     val eventEndDateOriginal = dateFormatOriginal.parse(event.getDataFinal().toString())!!
 

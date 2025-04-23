@@ -112,11 +112,12 @@ class ChangeLanguageActivity  : AppCompatActivity() {
     }
 
     /**
-     * Activa la navegación entre actividades en la barra inferior
+     * Activa la navegación entre actividades en la barra inferior.
      */
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)
+        val navMain = findViewById<ImageView>(R.id.navReservaIcon)
         val navInventori = findViewById<ImageView>(R.id.navInventariIcon)
         val navSettings = findViewById<ImageView>(R.id.navProfileIcon)
 
@@ -147,6 +148,12 @@ class ChangeLanguageActivity  : AppCompatActivity() {
             finish()
         }
 
+        navMain.setOnClickListener {
+            val intent = Intent(this, SearchEventActivity::class.java)
+            intent.putExtra("user", user)
+            startActivity(intent)
+            finish()
+        }
 
         navInventori.setOnClickListener {
             val intent = Intent(this, InventoryActivity::class.java)

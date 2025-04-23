@@ -24,4 +24,5 @@
     <string name="createEventRules">Benvingut! Recorda crear un event al que tothom pugi participar. Sort!</string>
     <string name="checknotaccept">Accepta els termes per a poder cancelar la teva reserva, siusplau.</string>
     <string name="passwordNotSame">Les contrasenyes no coincideixen.</string>
+    <string name="incorrectcredentials">Credencials incorrectes.</string>
 </resources>

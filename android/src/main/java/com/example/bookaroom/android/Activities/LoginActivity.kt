@@ -2,8 +2,10 @@ package com.example.bookaroom.android.Activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.Objects.loadUsersFromJSON
@@ -15,6 +17,14 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
 
         val loginButton = findViewById<TextView>(R.id.loginButton)
         loginButton.setOnClickListener {
@@ -59,17 +69,23 @@ class LoginActivity : AppCompatActivity() {
         val email = findViewById<TextView>(R.id.UsernameText)
         val password = findViewById<TextView>(R.id.PasswordText)
         val users = loadUsersFromJSON(loadJsonFromRaw(this, R.raw.users)!!)
+        var found = false
 
             for (user in users){
                 if (user.getEmail() == email.text.toString() && user.getPass() == password.text.toString()){
+                    found = true
                     val intent = Intent(this, SearchEventActivity::class.java)
                     intent.putExtra("user", user)
                     startActivity(intent)
                     finish()
                 }
             }
+
+        if (!found){
+            Toast.makeText(this, getString(R.string.incorrectcredentials), Toast.LENGTH_SHORT).show()
         }
     }
+}
 
 
 

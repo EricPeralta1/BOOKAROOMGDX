@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import com.example.bookaroom.Objects.Event
+import com.example.bookaroom.Objects.User
 import com.example.bookaroom.android.Activities.SearchEventActivity
 import com.example.bookaroom.R
 
@@ -24,14 +26,17 @@ class ChatWarningFrag : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initializeButton()
+        val dataBundle = requireArguments()
+        var user = dataBundle.getParcelable<User>("user")!!
+
+        initializeButton(user)
     }
 
     /**
      * Es la sección de aceptar términos del chat, si se aceptan, se puede acceder, sino se
      * devuelve a la pantalla inicial.
      */
-    private fun initializeButton() {
+    private fun initializeButton(user : User) {
         val acceptWarning = view?.findViewById<TextView>(R.id.accept_agreement_bt)!!
         val notAcceptWarning = view?.findViewById<TextView>(R.id.cancel_agreement_bt)!!
 
@@ -44,6 +49,7 @@ class ChatWarningFrag : Fragment() {
 
         notAcceptWarning.setOnClickListener {
             val intent = Intent(requireContext(), SearchEventActivity::class.java)
+            intent.putExtra("user", user)
             startActivity(intent)
             activity?.finish()
         }

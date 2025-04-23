@@ -3,6 +3,7 @@ package com.example.bookaroom.android.Activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -54,10 +55,22 @@ class ChatActivity : AppCompatActivity() {
     private val chatMessages = mutableListOf<Message>()
     private lateinit var messagesAdapter: ChatAdapter
     private lateinit var recyclerView: RecyclerView
+    internal var x1: Float = 0.toFloat()
+    internal var x2: Float = 0.toFloat()
+    internal var y1: Float = 0.toFloat()
+    internal var y2: Float = 0.toFloat()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_global_chat)
+
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_FULLSCREEN)
 
         user = intent.getParcelableExtra<User>("user")!!
 
@@ -71,6 +84,42 @@ class ChatActivity : AppCompatActivity() {
         send.setOnClickListener {
             sendMessage()
         }
+    }
+
+    override fun onTouchEvent(tochevent: MotionEvent): Boolean {
+        when (tochevent.action) {
+            MotionEvent.ACTION_DOWN -> {
+                x1 = tochevent.x
+                y1 = tochevent.y
+            }
+            MotionEvent.ACTION_UP -> {
+                x2 = tochevent.x
+                y2 = tochevent.y
+
+                val MIN_DISTANCE = 150
+
+                if (x2 - x1 > MIN_DISTANCE) {
+                    val i = Intent(this, SearchEventActivity::class.java)
+                    i.putExtra("user", user)
+                    startActivity(i)
+                }
+
+                if (x2 - x1 < MIN_DISTANCE) {
+                    if (user.getType() == "Event Organizer"){
+                        val i = Intent(this, CreateEventActivity::class.java)
+                        i.putExtra("user", user)
+                        startActivity(i)
+                        finish()
+                    } else {
+                        val i = Intent(this, ManualSearchActivity::class.java)
+                        i.putExtra("user", user)
+                        startActivity(i)
+                        finish()
+                    }
+                }
+            }
+        }
+        return false
     }
 
     /**
@@ -200,6 +249,10 @@ class ChatActivity : AppCompatActivity() {
      */
     private fun showChatWarning() {
         val warningFrag = ChatWarningFrag()
+        val bundle = Bundle()
+        bundle.putParcelable("user", user)
+        warningFrag.arguments = bundle
+
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.chat_contract, warningFrag)

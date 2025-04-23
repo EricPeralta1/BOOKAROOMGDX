@@ -24,4 +24,5 @@
     <string name="createEventRules">Bienvenido! Recuerda crear un evento que cualquiera pueda participar.  Suerte!</string>
     <string name="checknotaccept">Acepta los términos para poder cancelar la reseva, por favor.</string>
     <string name="passwordNotSame">Las contraseñas no coinciden.</string>
+    <string name="incorrectcredentials">Credenciales incorrectas.</string>
 </resources>

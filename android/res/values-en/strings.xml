@@ -24,4 +24,5 @@
     <string name="createEventRules">Welcome!  Remember to make an event anyone can the part in. Good luck!</string>
     <string name="checknotaccept">Accept the terms before being able to cancel the reservation, please.</string>
     <string name="passwordNotSame">Passwords don\'t match.</string>
+    <string name="incorrectcredentials">Incorrect credentials.</string>
 </resources>

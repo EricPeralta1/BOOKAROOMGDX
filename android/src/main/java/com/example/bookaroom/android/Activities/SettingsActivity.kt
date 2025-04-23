@@ -63,8 +63,8 @@ class SettingsActivity : AppCompatActivity() {
     private fun activateNavBar() {
         val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)
+        val navMain = findViewById<ImageView>(R.id.navReservaIcon)
         val navInventori = findViewById<ImageView>(R.id.navInventariIcon)
-        val navSettings = findViewById<ImageView>(R.id.navProfileIcon)
 
 
         if (user.getType() == "Event Organizer") {
@@ -101,8 +101,8 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        navSettings.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
+        navMain.setOnClickListener {
+            val intent = Intent(this, SearchEventActivity::class.java)
             intent.putExtra("user", user)
             startActivity(intent)
             finish()

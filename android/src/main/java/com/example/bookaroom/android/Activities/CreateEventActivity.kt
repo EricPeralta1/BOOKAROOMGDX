@@ -82,8 +82,8 @@ class CreateEventActivity  : AppCompatActivity() {
      * Activa la barra de navegación inferior.
      */
     private fun activateNavBar() {
-        val navSearch = findViewById<ImageView>(R.id.navSearchIcon)
         val navChat = findViewById<ImageView>(R.id.navChatIcon)
+        val navMain = findViewById<ImageView>(R.id.navReservaIcon)
         val navInventori = findViewById<ImageView>(R.id.navInventariIcon)
         val navSettings = findViewById<ImageView>(R.id.navProfileIcon)
 
@@ -93,19 +93,6 @@ class CreateEventActivity  : AppCompatActivity() {
             navSearch.setBackgroundResource(R.drawable.event_ic)
         }
 
-        navSearch.setOnClickListener {
-            if (user.getType() == "Event Organizer"){
-                val intent = Intent(this, CreateEventActivity::class.java)
-                intent.putExtra("user", user)
-                startActivity(intent)
-                finish()
-            } else {
-                val intent = Intent(this, ManualSearchActivity::class.java)
-                intent.putExtra("user", user)
-                startActivity(intent)
-                finish()
-            }
-        }
 
         navChat.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
@@ -114,6 +101,12 @@ class CreateEventActivity  : AppCompatActivity() {
             finish()
         }
 
+        navMain.setOnClickListener {
+            val intent = Intent(this, SearchEventActivity::class.java)
+            intent.putExtra("user", user)
+            startActivity(intent)
+            finish()
+        }
 
         navInventori.setOnClickListener {
             val intent = Intent(this, InventoryActivity::class.java)

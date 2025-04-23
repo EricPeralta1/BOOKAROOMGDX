@@ -2,6 +2,7 @@ package com.example.bookaroom.android.Activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -67,6 +68,9 @@ class SearchEventActivity : AppCompatActivity() {
         shadow.visibility = View.VISIBLE
         fragment.visibility = View.VISIBLE
     }
+
+
+
 
     /**
      * Inicializa la barra de navegación.

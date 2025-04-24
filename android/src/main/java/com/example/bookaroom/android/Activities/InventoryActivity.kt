@@ -24,6 +24,7 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStreamReader
+import kotlin.math.abs
 
 class InventoryActivity : AppCompatActivity() {
     private lateinit var user : User
@@ -63,17 +64,25 @@ class InventoryActivity : AppCompatActivity() {
                 y2 = tochevent.y
 
                 val MIN_DISTANCE = 150
+                val swipeX = x2 - x1
+                val swipeY = y2 - y1
 
-                if (x2 - x1 > MIN_DISTANCE) {
-                    val i = Intent(this, SettingsActivity::class.java)
-                    i.putExtra("user", user)
-                    startActivity(i)
+                if (abs(swipeX) > MIN_DISTANCE && abs(swipeY) < MIN_DISTANCE) {
+                    if (swipeX > 0) {
+                        val i = Intent(this, SettingsActivity::class.java)
+                        i.putExtra("user", user)
+                        startActivity(i)
+                        finish()
+                    }
                 }
 
-                if (x2 - x1 < MIN_DISTANCE) {
-                    val i = Intent(this, SearchEventActivity::class.java)
-                    i.putExtra("user", user)
-                    startActivity(i)
+                if (abs(swipeX) > MIN_DISTANCE && abs(swipeY) < MIN_DISTANCE) {
+                    if (swipeX < 0) {
+                        val i = Intent(this, SearchEventActivity::class.java)
+                        i.putExtra("user", user)
+                        startActivity(i)
+                        finish()
+                    }
                 }
             }
         }

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.R
 import java.util.Locale
+import kotlin.math.abs
 
 class ChangeLanguageActivity  : AppCompatActivity() {
     private lateinit var user : User
@@ -47,12 +48,16 @@ class ChangeLanguageActivity  : AppCompatActivity() {
                 y2 = tochevent.y
 
                 val MIN_DISTANCE = 150
+                val swipeX = x2 - x1
+                val swipeY = y2 - y1
 
-                if (x2 - x1 > MIN_DISTANCE) {
-                    val i = Intent(this, ChatActivity::class.java)
-                    i.putExtra("user", user)
-                    startActivity(i)
-                    finish()
+                if (abs(swipeX) > MIN_DISTANCE && abs(swipeY) < MIN_DISTANCE) {
+                    if (swipeX < 0) {
+                        val i = Intent(this, InventoryActivity::class.java)
+                        i.putExtra("user", user)
+                        startActivity(i)
+                        finish()
+                    }
                 }
             }
         }

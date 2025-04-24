@@ -82,7 +82,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="creado por USUARIO #1234"
+                    android:text="@string/createdBy"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -117,7 +117,7 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginRight="10dp"
                     android:gravity="left"
-                    android:text="PRECIO | 5000€"
+                    android:text="@string/priceDetail"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -130,7 +130,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="10dp"
                     android:gravity="left"
-                    android:text="SALA | PISO 5, SALA 18"
+                    android:text="@string/roomDetail"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -144,7 +144,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:gravity="left"
-                    android:text="TIEMPO | DOMINGO 30 DE DICIEMBRE"
+                    android:text="@string/dayDetail"
                     android:textColor="@color/black"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -161,7 +161,7 @@
                 android:textColor="@color/white"
                 android:fontFamily="@font/outfit_medium"
                 android:background="@drawable/orange_rectangle"
-                android:text="RESERVAR"
+                android:text="@string/Reserve"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"
@@ -179,7 +179,7 @@
                 android:textColor="@color/white"
                 android:fontFamily="@font/outfit_medium"
                 android:background="@drawable/orange_rectangle"
-                android:text="CERRAR"
+                android:text="@string/close"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.497"

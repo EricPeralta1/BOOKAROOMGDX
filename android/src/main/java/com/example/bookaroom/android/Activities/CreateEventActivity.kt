@@ -15,6 +15,7 @@ import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.abs
 
 class CreateEventActivity  : AppCompatActivity() {
     private lateinit var user : User
@@ -52,12 +53,16 @@ class CreateEventActivity  : AppCompatActivity() {
                 y2 = tochevent.y
 
                 val MIN_DISTANCE = 150
+                val swipeX = x2 - x1
+                val swipeY = y2 - y1
 
-                if (x2 - x1 > MIN_DISTANCE) {
-                    val i = Intent(this, ChatActivity::class.java)
-                    i.putExtra("user", user)
-                    startActivity(i)
-                    finish()
+                if (abs(swipeX) > MIN_DISTANCE && Math.abs(swipeY) < MIN_DISTANCE) {
+                    if (swipeX > 0) {
+                        val i = Intent(this, ChatActivity::class.java)
+                        i.putExtra("user", user)
+                        startActivity(i)
+                        finish()
+                    }
                 }
             }
         }

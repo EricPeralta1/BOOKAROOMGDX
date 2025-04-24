@@ -45,6 +45,7 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.math.abs
 
 class ChatActivity : AppCompatActivity() {
 
@@ -98,13 +99,19 @@ class ChatActivity : AppCompatActivity() {
 
                 val MIN_DISTANCE = 150
 
-                if (x2 - x1 > MIN_DISTANCE) {
-                    val i = Intent(this, SearchEventActivity::class.java)
-                    i.putExtra("user", user)
-                    startActivity(i)
+                val swipeX = x2 - x1
+                val swipeY = y2 - y1
+
+                if (abs(swipeX) > MIN_DISTANCE && abs(swipeY) < MIN_DISTANCE) {
+                    if (swipeX > 0) {
+                        val i = Intent(this, SearchEventActivity::class.java)
+                        i.putExtra("user", user)
+                        startActivity(i)
+                        finish()
+                    }
                 }
 
-                if (x2 - x1 < MIN_DISTANCE) {
+                if (abs(swipeX) > MIN_DISTANCE && abs(swipeY) < MIN_DISTANCE) {
                     if (user.getType() == "Event Organizer"){
                         val i = Intent(this, CreateEventActivity::class.java)
                         i.putExtra("user", user)

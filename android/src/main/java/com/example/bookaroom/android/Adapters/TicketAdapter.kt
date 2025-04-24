@@ -14,6 +14,8 @@ import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.Room
 import com.example.bookaroom.Objects.Ticket
 import com.example.bookaroom.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 /**
  * Adapter utilizado para cargar los tickets del inventario.
@@ -34,10 +36,12 @@ class TicketAdapter(private val reservas: List<Ticket>, private val events : Lis
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TicketViewHolder, position: Int) {
         val reserva = reservas[position]
-            val event = events.find { it.id_esdeveniment == reserva.getIdEvent() }
+        val dateFormat = SimpleDateFormat("EEEE dd MMMM yyyy", Locale.getDefault())
+        val event = events.find { it.id_esdeveniment == reserva.getIdEvent() }
+
             holder.ticketName.text = event?.getTitle()
-            holder.ticketRoom.text = "SALA" + event?.getIdSala().toString()
-            holder.ticketDate.text = event?.getDataInici().toString()
+            holder.ticketRoom.text = "SALA " + event?.getIdSala().toString()
+            holder.ticketDate.text = event?.getDataInici()?.let { dateFormat.format(it) }
             holder.itemView.setOnClickListener {
                 onItemClick(reserva)
             }

@@ -12,6 +12,10 @@ import com.example.bookaroom.R
 import com.example.bookaroom.android.Activities.SeatSelectionActivity
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.User
+import com.example.bookaroom.Objects.loadJsonFromRaw
+import com.example.bookaroom.Objects.loadUsersFromJSON
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class EventDetailsFrag : Fragment() {
@@ -51,10 +55,6 @@ class EventDetailsFrag : Fragment() {
             fragment?.visibility = View.GONE
         }
 
-
-
-
-
         loadData(selectedEvent)
     }
 
@@ -68,13 +68,17 @@ class EventDetailsFrag : Fragment() {
         val eventPrice = view?.findViewById<TextView>(R.id.eventPrice)
         val eventDate = view?.findViewById<TextView>(R.id.eventDate)
         val eventRoom = view?.findViewById<TextView>(R.id.eventRoom)
+        val dateFormat = SimpleDateFormat("EEEE dd MMMM yyyy", Locale.getDefault())
+        val users = loadUsersFromJSON(loadJsonFromRaw(requireContext(), R.raw.users)!!)
+        val ticketUser = users.find { it.getIdUser() == event.getIdUser() }!!
+
 
         eventTitle?.text =  event.getTitle()
-        userName?.text = "creado por EJEMPLO"
+        userName?.text = getString(R.string.createdBy) + ticketUser.getName()
         eventInfo?.text = event.getDecription()
-        eventPrice?.text = "PRECIO | " + event.getPrice()
-        eventDate?.text = "FECHA | " + event.getDataInici().toString()
-        eventRoom?.text = "SALA | 10"
+        eventPrice?.text = getString(R.string.priceDetail) + event.getPrice() + " €"
+        eventDate?.text = getString(R.string.dayDetail) + event.getDataInici()?.let { dateFormat.format(it) }
+        eventRoom?.text = getString(R.string.roomDetail) + event.getIdSala()
 
     }
 }

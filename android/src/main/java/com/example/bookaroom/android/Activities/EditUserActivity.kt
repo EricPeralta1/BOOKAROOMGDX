@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.R
 import com.google.gson.Gson
+import kotlin.math.abs
 
 class EditUserActivity  : AppCompatActivity() {
     private lateinit var user : User
@@ -51,12 +52,16 @@ class EditUserActivity  : AppCompatActivity() {
                 y2 = tochevent.y
 
                 val MIN_DISTANCE = 150
+                val swipeX = x2 - x1
+                val swipeY = y2 - y1
 
-                if (x2 - x1 < MIN_DISTANCE) {
-                    val i = Intent(this, InventoryActivity::class.java)
-                    i.putExtra("user", user)
-                    startActivity(i)
-                    finish()
+                if (abs(swipeX) > MIN_DISTANCE && abs(swipeY) < MIN_DISTANCE) {
+                    if (swipeX < 0) {
+                        val i = Intent(this, InventoryActivity::class.java)
+                        i.putExtra("user", user)
+                        startActivity(i)
+                        finish()
+                    }
                 }
             }
         }
@@ -104,30 +109,35 @@ class EditUserActivity  : AppCompatActivity() {
 
         navSearch.setOnClickListener {
             val intent = Intent(this, ManualSearchActivity::class.java)
+            intent.putExtra("user", user)
             startActivity(intent)
             finish()
         }
 
         navChat.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("user", user)
             startActivity(intent)
             finish()
         }
 
         navMain.setOnClickListener {
             val intent = Intent(this, SearchEventActivity::class.java)
+            intent.putExtra("user", user)
             startActivity(intent)
             finish()
         }
 
         navInventori.setOnClickListener {
             val intent = Intent(this, InventoryActivity::class.java)
+            intent.putExtra("user", user)
             startActivity(intent)
             finish()
         }
 
         navSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
+            intent.putExtra("user", user)
             startActivity(intent)
             finish()
         }

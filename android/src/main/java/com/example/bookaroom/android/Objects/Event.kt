@@ -56,7 +56,12 @@ data class Event(
     fun getIdSala(): Int {
         return id_sala
     }
-    
+
+
+    fun getIdUser(): Int {
+        return id_usuari
+    }
+
 
 
     override fun describeContents(): Int {

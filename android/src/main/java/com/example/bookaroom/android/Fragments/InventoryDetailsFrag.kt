@@ -11,6 +11,8 @@ import com.example.bookaroom.Objects.Ticket
 import com.example.bookaroom.Objects.loadEventsFromJSON
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class InventoryDetailsFrag  : Fragment() {
     override fun onCreateView(
@@ -68,10 +70,12 @@ class InventoryDetailsFrag  : Fragment() {
         val ticketEndDate = view?.findViewById<TextView>(R.id.saveChanges)
         val ticketPrice = view?.findViewById<TextView>(R.id.priceSelectedTicket)
 
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
         ticketTitle?.text = event?.getTitle()
         ticketDescription?.text = event?.getDecription()
-        ticketStartDate?.text = event?.getDataInici().toString()
-        ticketEndDate?.text = event?.getDataFinal().toString()
+        ticketStartDate?.text = event?.getDataInici()?.let { dateFormat.format(it) }
+        ticketEndDate?.text = event?.getDataFinal()?.let { dateFormat.format(it) }
         ticketPrice?.text = event?.getPrice().toString()
     }
 }

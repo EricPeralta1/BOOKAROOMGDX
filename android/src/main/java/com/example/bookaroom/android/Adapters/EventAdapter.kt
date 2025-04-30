@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.R
 
@@ -31,13 +32,15 @@ class EventAdapter(private val eventList: List<Event>, private val context: Cont
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = eventList[position]
         holder.eventName.text = event.nombre
-        val bitmap = getBitmapFromHex(event.getImageByte())
-        holder.eventImage.setImageBitmap(bitmap)
+        val multimedia = event.getImageByte()
+
+        Glide.with(holder.itemView.context)
+            .load(multimedia)
+            .into(holder.eventImage)
+
         holder.itemView.setOnClickListener {
             onItemClick(event)
         }
-
-
     }
 
     fun hexStringToByteArray(hex: String): ByteArray {

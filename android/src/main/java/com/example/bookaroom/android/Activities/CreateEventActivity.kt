@@ -81,6 +81,7 @@ class CreateEventActivity  : AppCompatActivity() {
         val preu: Int = findViewById<EditText>(R.id.priceET).text.toString().toInt()
 
 
+
     }
 
     /**

@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookaroom.Adapters.EventAdapter
@@ -16,11 +17,14 @@ import com.example.bookaroom.Objects.User
 import com.example.bookaroom.Objects.loadEventsFromJSON
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.R
+import com.example.bookaroom.android.API.ApiRepository.getEvents
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 class SearchEventActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var user : User
+    private  var eventList = ArrayList<Event>()
     internal var x1: Float = 0.toFloat()
     internal var x2: Float = 0.toFloat()
     internal var y1: Float = 0.toFloat()
@@ -51,7 +55,15 @@ class SearchEventActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val eventList = (loadEventsFromJSON(loadJsonFromRaw(this, R.raw.events)!!))
+        lifecycleScope.launch {
+            try {
+                val events = getEvents()
+                eventList = events?.toMutableList() as ArrayList<Event>
+            }catch (e: Exception)
+            {
+                println("API Connexion Error")
+            }
+        }
 
         val eventAdapter = EventAdapter(eventList, this) { event ->
             onEventClick(event)

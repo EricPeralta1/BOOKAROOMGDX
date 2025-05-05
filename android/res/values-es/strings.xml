@@ -50,4 +50,5 @@
     <string name="surname">Apellido</string>
     <string name="edituserdetails">EDITAR DETALLES DE USUARIO</string>
     <string name="cancelchanges">Descartar</string>
+    <string name="desc">Descripción</string>
 </resources>

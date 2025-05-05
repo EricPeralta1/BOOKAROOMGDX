@@ -2,16 +2,12 @@ package com.example.bookaroom.Adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookaroom.Objects.Event
-import com.example.bookaroom.Objects.Room
 import com.example.bookaroom.Objects.Ticket
 import com.example.bookaroom.R
 import java.text.SimpleDateFormat
@@ -37,7 +33,7 @@ class TicketAdapter(private val reservas: List<Ticket>, private val events : Lis
     override fun onBindViewHolder(holder: TicketViewHolder, position: Int) {
         val reserva = reservas[position]
         val dateFormat = SimpleDateFormat("EEEE dd MMMM yyyy", Locale.getDefault())
-        val event = events.find { it.id_esdeveniment == reserva.getIdEvent() }
+        val event = events.find { it.event_id == reserva.getIdEvent() }
 
             holder.ticketName.text = event?.getTitle()
             holder.ticketRoom.text = "SALA " + event?.getIdSala().toString()

@@ -6,14 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.lifecycleScope
 import com.example.bookaroom.R
 import com.example.bookaroom.android.Activities.SeatSelectionActivity
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.Objects.loadUsersFromJSON
+import com.example.bookaroom.android.API.ApiRepository.getUsers
+import com.example.bookaroom.android.Activities.LoginActivity
+import com.example.bookaroom.android.Activities.SearchEventActivity
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -55,13 +61,23 @@ class EventDetailsFrag : Fragment() {
             fragment?.visibility = View.GONE
         }
 
-        loadData(selectedEvent)
+        lifecycleScope.launch {
+            try {
+                val users = getUsers()
+                val userList = users?.toMutableList() as ArrayList<User>
+
+                loadData(selectedEvent, userList)
+            }catch (e: Exception)
+            {
+                println("Error: " + e)
+            }
+        }
     }
 
     /**
      * Carga los datos del evento seleccionado.
      */
-    private fun loadData(event : Event) {
+    private fun loadData(event : Event, userList: ArrayList<User>) {
         val eventTitle = view?.findViewById<TextView>(R.id.eventTitle)
         val userName = view?.findViewById<TextView>(R.id.eventUserName)
         val eventInfo = view?.findViewById<TextView>(R.id.eventInfo)
@@ -69,8 +85,8 @@ class EventDetailsFrag : Fragment() {
         val eventDate = view?.findViewById<TextView>(R.id.eventDate)
         val eventRoom = view?.findViewById<TextView>(R.id.eventRoom)
         val dateFormat = SimpleDateFormat("EEEE dd MMMM yyyy", Locale.getDefault())
-        val users = loadUsersFromJSON(loadJsonFromRaw(requireContext(), R.raw.users)!!)
-        val ticketUser = users.find { it.getIdUser() == event.getIdUser() }!!
+
+        val ticketUser = userList.find { it.getIdUser() == event.getIdUser() }!!
 
 
         eventTitle?.text =  event.getTitle()
@@ -79,6 +95,8 @@ class EventDetailsFrag : Fragment() {
         eventPrice?.text = getString(R.string.priceDetail) + event.getPrice() + " €"
         eventDate?.text = getString(R.string.dayDetail) + event.getDataInici()?.let { dateFormat.format(it) }
         eventRoom?.text = getString(R.string.roomDetail) + event.getIdSala()
+
+
 
     }
 }

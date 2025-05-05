@@ -2,19 +2,22 @@ package com.example.bookaroom.Objects
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.Gson
 import java.util.Date
 
 data class Event(
-    val id_esdeveniment: Int,
-    val id_sala: Int,
-    val id_usuari: Int,
-    val aforament: Int,
-    val data_inici: Date,
-    val data_fi: Date,
-    val foto_event: String,
-    val preu: Float,
-    val nombre: String,
-    val descripcio: String): Parcelable {
+    val event_id: Int,
+    val room_id: Int,
+    val user_id: Int,
+    val capacity: Int,
+    val start_date: Date,
+    val end_date: Date,
+    private val price: Float,
+    val name: String,
+    val description: String,
+    val event_image: String,
+    val active : Int
+   ): Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -23,43 +26,48 @@ data class Event(
         parcel.readInt(),
         Date(parcel.readLong()),
         Date(parcel.readLong()),
-        parcel.readString() ?: "",
         parcel.readFloat(),
         parcel.readString() ?: "",
-        parcel.readString() ?: ""
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readInt(),
         )
 
     fun getImageByte(): String {
-        return foto_event
+        return event_image
     }
 
     fun getTitle(): String {
-        return nombre
+        return name
     }
 
     fun getPrice(): Float {
-        return preu
+        return price
     }
 
     fun getDecription(): String {
-        return descripcio
+        return description
     }
 
     fun getDataInici(): Date {
-        return data_inici
+        return start_date
     }
 
     fun getDataFinal(): Date {
-        return data_fi
+        return end_date
     }
 
     fun getIdSala(): Int {
-        return id_sala
+        return room_id
     }
 
 
     fun getIdUser(): Int {
-        return id_usuari
+        return user_id
+    }
+
+    fun toJson(): String {
+        return Gson().toJson(this)
     }
 
 

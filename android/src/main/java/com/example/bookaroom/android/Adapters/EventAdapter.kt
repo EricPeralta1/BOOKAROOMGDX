@@ -31,7 +31,7 @@ class EventAdapter(private val eventList: List<Event>, private val context: Cont
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val event = eventList[position]
-        holder.eventName.text = event.nombre
+        holder.eventName.text = event.name
         val multimedia = event.getImageByte()
 
         Glide.with(holder.itemView.context)

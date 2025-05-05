@@ -50,4 +50,5 @@
     <string name="surname">Surname</string>
     <string name="edituserdetails">EDIT USER DETAILS</string>
     <string name="cancelchanges">Cancel</string>
+    <string name="desc">Description</string>
 </resources>

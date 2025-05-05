@@ -59,17 +59,18 @@ class SearchEventActivity : AppCompatActivity() {
             try {
                 val events = getEvents()
                 eventList = events?.toMutableList() as ArrayList<Event>
+
+                val eventAdapter = EventAdapter(eventList, this@SearchEventActivity) { event ->
+                    onEventClick(event)
+                }
+
+                recyclerView.adapter = eventAdapter
             }catch (e: Exception)
             {
                 println("API Connexion Error")
             }
         }
 
-        val eventAdapter = EventAdapter(eventList, this) { event ->
-            onEventClick(event)
-        }
-
-        recyclerView.adapter = eventAdapter
     }
 
     /**

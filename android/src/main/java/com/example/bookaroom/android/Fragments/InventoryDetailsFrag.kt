@@ -62,7 +62,7 @@ class InventoryDetailsFrag  : Fragment() {
      */
     private fun chargeDetails(ticket: Ticket) {
         val events = loadEventsFromJSON(loadJsonFromRaw(requireContext(), R.raw.events)!!)
-        val event = events.find { it.id_esdeveniment == ticket.getIdEvent() }
+        val event = events.find { it.event_id == ticket.getIdEvent() }
 
         val ticketTitle = view?.findViewById<TextView>(R.id.TitleSelectedTicket)
         val ticketDescription = view?.findViewById<TextView>(R.id.descriptionSelecTicket)

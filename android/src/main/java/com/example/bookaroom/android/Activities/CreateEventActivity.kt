@@ -2,16 +2,24 @@ package com.example.bookaroom.android.Activities
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.R
+import com.example.bookaroom.android.API.ApiRepository
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -19,6 +27,7 @@ import kotlin.math.abs
 
 class CreateEventActivity  : AppCompatActivity() {
     private lateinit var user : User
+    private var imageUri: Uri? = null
     internal var x1: Float = 0.toFloat()
     internal var x2: Float = 0.toFloat()
     internal var y1: Float = 0.toFloat()
@@ -37,9 +46,19 @@ class CreateEventActivity  : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
 
         user = intent.getParcelableExtra<User>("user")!!
+        val imageSelect = findViewById<ImageView>(R.id.imageSelect)
+
+        imageSelect.setOnClickListener {
+            val photoPickerIntent = Intent(Intent.ACTION_PICK)
+            photoPickerIntent.type = "image/*"
+            startActivityForResult(photoPickerIntent, 1)
+        }
         activateNavBar()
         initializeCalendars()
-        saveEvent()
+        val saveChanges = findViewById<TextView>(R.id.saveChanges)
+        saveChanges.setOnClickListener {
+            saveEvent()
+        }
     }
 
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
@@ -69,19 +88,71 @@ class CreateEventActivity  : AppCompatActivity() {
         return false
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            val selectedImageUri = data?.data
+            val imageView = findViewById<ImageView>(R.id.imageSelect)
+            imageView.setImageURI(selectedImageUri)
+            imageUri = selectedImageUri
+        }
+    }
+
     /**
      * Guarda el evento creado.
      */
     private fun saveEvent() {
-        val name: String = findViewById<EditText>(R.id.nameEditText).text.toString()
-        val aforament: String = findViewById<EditText>(R.id.surnameEditText).text.toString()
-        val startDate: String = findViewById<EditText>(R.id.startDateET).text.toString()
-        val endDate: String = findViewById<EditText>(R.id.endDateET).text.toString()
-        val sala: String = findViewById<EditText>(R.id.salaET).text.toString()
-        val preu: Int = findViewById<EditText>(R.id.priceET).text.toString().toInt()
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val name: String = findViewById<EditText>(R.id.nameEditText).text.toString()
+                val aforament: Int = findViewById<EditText>(R.id.surnameEditText).text.toString().toInt()
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+                val startDate: String = findViewById<EditText>(R.id.startDateET).text.toString()
+                val filterStartDate = dateFormat.parse(startDate)!!
+                val endDate: String = findViewById<EditText>(R.id.endDateET).text.toString()
+                val filterEndDate = dateFormat.parse(endDate)!!
+                val sala: Int = findViewById<EditText>(R.id.salaET).text.toString().toInt()
+                val preu: Float = findViewById<EditText>(R.id.priceET).text.toString().toFloat()
+                val description : String = findViewById<EditText>(R.id.descEditText).toString()
 
 
+                if (imageUri != null){
+                    val fileName = imageUri?.let { getFileName(it) }!!
+                    val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, fileName, 1)
+                    val createdEvent = ApiRepository.createEvent(event, imageUri)
+                    if (createdEvent != null) {
+                        Toast.makeText(applicationContext, "Evento creado exitosamente", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(applicationContext, "Error al crear el evento", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, " ", 1)
+                    val createdEvent = ApiRepository.createEvent(event, imageUri)
+                    if (createdEvent != null) {
+                        Toast.makeText(applicationContext, "Evento creado exitosamente", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(applicationContext, "Error al crear el evento", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
+            } catch (e: Exception) {
+                Toast.makeText(applicationContext, "Error de conexión: ${e.message}", Toast.LENGTH_SHORT).show()
+                println("Error de conexión: ${e.message}")
+            }
+        }
+
+    }
+
+    fun getFileName(uri: Uri): String? {
+        var fileName: String? = null
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (it.moveToFirst()) {
+                fileName = it.getString(nameIndex)
+            }
+        }
+        return fileName
     }
 
     /**

@@ -124,15 +124,6 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/exitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="324dp"
-        tools:layout_editor_absoluteY="405dp">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout1"
         android:layout_width="355dp"
         android:layout_height="76dp"
@@ -230,13 +221,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="371dp"
+        android:layout_height="91dp"
 
-        android:layout_marginBottom="28dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="100dp"
         app:layout_constraintBottom_toTopOf="@+id/saveChanges"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -253,6 +243,44 @@
 
         <EditText
             android:id="@+id/priceET"
+            android:layout_width="175dp"
+            android:layout_height="37dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/eventinfo_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageSelect"
+            android:layout_width="175dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/brown_orange_rectangle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="128dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.475"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/outfit_bold"
+            android:text="@string/desc"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@+id/descEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/descEditText"
             android:layout_width="350dp"
             android:layout_height="40dp"
             android:layout_marginBottom="4dp"
@@ -261,13 +289,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.491"
             app:layout_constraintStart_toStartOf="parent" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/saveChanges"
         android:layout_width="300dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="72dp"
         android:background="@drawable/orange_rectangle"
         android:fontFamily="@font/outfit_medium"
         android:gravity="center"
@@ -276,6 +306,7 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.486"
         app:layout_constraintStart_toStartOf="parent" />
 
     <include

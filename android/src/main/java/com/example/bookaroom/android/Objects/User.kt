@@ -4,12 +4,14 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class User(
-    val id_usuari : Int,
-    private var nom : String,
-    private var cognom : String,
+    val user_id : Int,
+    private var name : String,
+    private var surname : String,
     private var email : String,
-    private var pass : String,
-    private val rol : String) : Parcelable {
+    private var password : String,
+    private val role : String,
+    private val active : Int
+    ) : Parcelable {
 
         constructor(parcel : Parcel) : this(
             parcel.readInt(),
@@ -17,10 +19,12 @@ class User(
             parcel.readString()!!,
             parcel.readString()!!,
             parcel.readString()!!,
-            parcel.readString()!!)
+            parcel.readString()!!,
+            parcel.readInt()
+        )
 
     fun getIdUser(): Int {
-        return id_usuari
+        return user_id
     }
 
     fun getEmail(): String {
@@ -28,33 +32,33 @@ class User(
     }
 
     fun getPass(): String {
-        return pass
+        return password
     }
 
     fun getName(): String {
-        return nom
+        return name
     }
 
     fun getSurname(): String {
-        return cognom
+        return surname
     }
 
     fun getType(): String {
-        return rol
+        return role
     }
 
     fun setNom(nom: String) {
-        this.nom = nom
+        this.name = nom
     }
 
     fun setCognom(cognom: String) {
-        this.cognom = cognom
+        this.surname = cognom
     }
     fun setEmail(email: String) {
         this.email = email
     }
     fun setPass(pass: String) {
-        this.pass = pass
+        this.password = pass
     }
 
 
@@ -63,12 +67,12 @@ class User(
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeInt(id_usuari)
-        dest.writeString(nom)
-        dest.writeString(cognom)
+        dest.writeInt(user_id)
+        dest.writeString(name)
+        dest.writeString(surname)
         dest.writeString(email)
-        dest.writeString(pass)
-        dest.writeString(rol)
+        dest.writeString(password)
+        dest.writeString(role)
     }
 
 

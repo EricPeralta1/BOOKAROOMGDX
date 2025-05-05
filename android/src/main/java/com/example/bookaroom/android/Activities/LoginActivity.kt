@@ -7,12 +7,21 @@ import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.bookaroom.Adapters.EventAdapter
+import com.example.bookaroom.Objects.Event
+import com.example.bookaroom.Objects.User
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.Objects.loadUsersFromJSON
 
 import com.example.bookaroom.R
+import com.example.bookaroom.android.API.ApiRepository.getEvents
+import com.example.bookaroom.android.API.ApiRepository.getUsers
+import com.example.bookaroom.android.Activities.SearchEventActivity
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
+    private  var userList = ArrayList<User>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,25 +74,35 @@ class LoginActivity : AppCompatActivity() {
      * Si lo son, se pasa a la siguiente actividad, SearchEventActivity.
      */
     private fun checkLoginDetails() {
-
         val email = findViewById<TextView>(R.id.UsernameText)
         val password = findViewById<TextView>(R.id.PasswordText)
-        val users = loadUsersFromJSON(loadJsonFromRaw(this, R.raw.users)!!)
         var found = false
 
-            for (user in users){
-                if (user.getEmail() == email.text.toString() && user.getPass() == password.text.toString()){
-                    found = true
-                    val intent = Intent(this, SearchEventActivity::class.java)
-                    intent.putExtra("user", user)
-                    startActivity(intent)
-                    finish()
-                }
-            }
+        lifecycleScope.launch {
+            try {
+                val users = getUsers()
+                userList = users?.toMutableList() as ArrayList<User>
 
-        if (!found){
-            Toast.makeText(this, getString(R.string.incorrectcredentials), Toast.LENGTH_SHORT).show()
+                for (user in userList){
+                    if (user.getEmail() == email.text.toString() && user.getPass() == password.text.toString()){
+                        found = true
+                        val intent = Intent(this@LoginActivity, SearchEventActivity::class.java)
+                        intent.putExtra("user", user)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+
+                if (!found){
+                    Toast.makeText(this@LoginActivity, getString(R.string.incorrectcredentials), Toast.LENGTH_SHORT).show()
+                }
+
+            }catch (e: Exception)
+            {
+                println("API Connexion Error")
+            }
         }
+
     }
 }
 

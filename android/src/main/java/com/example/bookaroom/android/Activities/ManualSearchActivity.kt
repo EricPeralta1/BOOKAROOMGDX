@@ -11,6 +11,7 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookaroom.Adapters.EventAdapter
@@ -20,6 +21,8 @@ import com.example.bookaroom.Objects.User
 import com.example.bookaroom.Objects.loadEventsFromJSON
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.R
+import com.example.bookaroom.android.API.ApiRepository.getEvents
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -27,6 +30,7 @@ import kotlin.math.abs
 
 class ManualSearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
+    private  var eventList = ArrayList<Event>()
 
     private lateinit var user : User
     internal var x1: Float = 0.toFloat()
@@ -158,71 +162,83 @@ class ManualSearchActivity : AppCompatActivity() {
      * campos estan llenos o alterados y busca según esos datos.
      */
     private fun updateEventList(startDate : String, endDate : String, eventName: String, price: Int){
-        val eventList = (loadEventsFromJSON(loadJsonFromRaw(this, R.raw.events)!!))
-        var filteredEventList : ArrayList<Event> = ArrayList()
+        lifecycleScope.launch {
+            try {
+                val events = getEvents()
+                eventList = events?.toMutableList() as ArrayList<Event>
+                var filteredEventList : ArrayList<Event> = ArrayList()
 
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-        val dateFormatOriginal = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+                val dateFormatOriginal = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
 
-        eventList.forEach { event ->
-            var matches = true
+                eventList.forEach { event ->
+                    var matches = true
 
-            if (eventName.isNotEmpty() && !event.getTitle().contains(eventName, ignoreCase = true)) {
-                matches = false
-            }
-
-            if (startDate.isNotEmpty()) {
-                try {
-                    val filterStartDate = dateFormat.parse(startDate)
-
-                    val eventStartDateOriginal = dateFormatOriginal.parse(event.getDataInici().toString())!!
-
-                    val eventStartDate = dateFormat.format(eventStartDateOriginal)
-
-                    if (eventStartDateOriginal.before(filterStartDate)) {
+                    if (eventName.isNotEmpty() && !event.getTitle()
+                            .contains(eventName, ignoreCase = true)
+                    ) {
                         matches = false
                     }
-                } catch (e: Exception) {
-                    matches = false
-                    e.printStackTrace()
-                }
-            }
 
-            if (endDate.isNotEmpty()) {
-                try {
-                    val filterStartDate = dateFormat.parse(endDate)
+                    if (startDate.isNotEmpty()) {
+                        try {
+                            val filterStartDate = dateFormat.parse(startDate)
 
-                    val eventEndDateOriginal = dateFormatOriginal.parse(event.getDataFinal().toString())!!
+                            val eventStartDateOriginal =
+                                dateFormatOriginal.parse(event.getDataInici().toString())!!
 
-                    val eventStartDate = dateFormat.format(eventEndDateOriginal)
+                            val eventStartDate = dateFormat.format(eventStartDateOriginal)
 
-                    if (eventEndDateOriginal.after(filterStartDate)) {
+                            if (eventStartDateOriginal.before(filterStartDate)) {
+                                matches = false
+                            }
+                        } catch (e: Exception) {
+                            matches = false
+                            e.printStackTrace()
+                        }
+                    }
+
+                    if (endDate.isNotEmpty()) {
+                        try {
+                            val filterStartDate = dateFormat.parse(endDate)
+
+                            val eventEndDateOriginal =
+                                dateFormatOriginal.parse(event.getDataFinal().toString())!!
+
+                            val eventStartDate = dateFormat.format(eventEndDateOriginal)
+
+                            if (eventEndDateOriginal.after(filterStartDate)) {
+                                matches = false
+                            }
+                        } catch (e: Exception) {
+                            matches = false
+                            e.printStackTrace()
+                        }
+                    }
+
+                    if (price > 0 && event.getPrice() < price.toFloat()) {
                         matches = false
                     }
-                } catch (e: Exception) {
-                    matches = false
-                    e.printStackTrace()
+
+                    if (matches) {
+                        filteredEventList.add(event)
+                    }
+
+                    recyclerView = findViewById(R.id.recyclerView)
+                    recyclerView.layoutManager = LinearLayoutManager(this@ManualSearchActivity)
+
+
+                    val eventAdapter = EventAdapter(filteredEventList, this@ManualSearchActivity) { event ->
+                        onEventClick(event)
+                    }
+
+                    recyclerView.adapter = eventAdapter
                 }
-            }
-
-            if (price > 0 && event.getPrice() < price.toFloat()) {
-                matches = false
-            }
-
-            if (matches) {
-                filteredEventList.add(event)
+            }catch (e: Exception)
+            {
+                println("API Connexion Error")
             }
         }
-
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-
-        val eventAdapter = EventAdapter(filteredEventList, this) { event ->
-            onEventClick(event)
-        }
-
-        recyclerView.adapter = eventAdapter
     }
 
     /**
@@ -232,13 +248,22 @@ class ManualSearchActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val eventList = (loadEventsFromJSON(loadJsonFromRaw(this, R.raw.events)!!))
 
-        val eventAdapter = EventAdapter(eventList, this) { event ->
-            onEventClick(event)
+        lifecycleScope.launch {
+            try {
+                val events = getEvents()
+                eventList = events?.toMutableList() as ArrayList<Event>
+
+                val eventAdapter = EventAdapter(eventList, this@ManualSearchActivity) { event ->
+                    onEventClick(event)
+                }
+
+                recyclerView.adapter = eventAdapter
+            }catch (e: Exception)
+            {
+                println("API Connexion Error")
+            }
         }
-
-        recyclerView.adapter = eventAdapter
     }
 
     /**

@@ -106,28 +106,32 @@ class CreateEventActivity  : AppCompatActivity() {
             try {
                 val name: String = findViewById<EditText>(R.id.nameEditText).text.toString()
                 val aforament: Int = findViewById<EditText>(R.id.surnameEditText).text.toString().toInt()
-                val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                 val startDate: String = findViewById<EditText>(R.id.startDateET).text.toString()
-                val filterStartDate = dateFormat.parse(startDate)!!
+                val filterStartDate = dateFormat.parse(startDate)
                 val endDate: String = findViewById<EditText>(R.id.endDateET).text.toString()
                 val filterEndDate = dateFormat.parse(endDate)!!
                 val sala: Int = findViewById<EditText>(R.id.salaET).text.toString().toInt()
                 val preu: Float = findViewById<EditText>(R.id.priceET).text.toString().toFloat()
-                val description : String = findViewById<EditText>(R.id.descEditText).toString()
+                val description : String = findViewById<EditText>(R.id.descEditText).text.toString()
 
 
                 if (imageUri != null){
                     val fileName = imageUri?.let { getFileName(it) }!!
-                    val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, fileName, 1)
-                    val createdEvent = ApiRepository.createEvent(event, imageUri)
+                    val imageString = imageTransform()!!
+                    val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, " ", 1)
+                    val createdEvent = ApiRepository.createEvent(event)
+
                     if (createdEvent != null) {
+                        ApiRepository.uploadEventImage(fileName, imageString)
                         Toast.makeText(applicationContext, "Evento creado exitosamente", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(applicationContext, "Error al crear el evento", Toast.LENGTH_SHORT).show()
                     }
+
                 } else {
                     val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, " ", 1)
-                    val createdEvent = ApiRepository.createEvent(event, imageUri)
+                    val createdEvent = ApiRepository.createEvent(event)
                     if (createdEvent != null) {
                         Toast.makeText(applicationContext, "Evento creado exitosamente", Toast.LENGTH_SHORT).show()
                     } else {
@@ -143,16 +147,36 @@ class CreateEventActivity  : AppCompatActivity() {
 
     }
 
-    fun getFileName(uri: Uri): String? {
-        var fileName: String? = null
-        val cursor = contentResolver.query(uri, null, null, null, null)
+    private fun imageTransform() : String?{
+        return try {
+            val inputStream = contentResolver.openInputStream(imageUri!!)
+            val bytes = inputStream?.readBytes()
+            inputStream?.close()
+            if (bytes != null) {
+                android.util.Base64.encodeToString(bytes, android.util.Base64.DEFAULT)
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+
+    private fun getFileName(uri: Uri): String {
+        val context = this
+        var result = "image.jpg"
+        val cursor = context.contentResolver.query(uri, null, null, null, null)
         cursor?.use {
-            val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
             if (it.moveToFirst()) {
-                fileName = it.getString(nameIndex)
+                val index = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (index != -1) {
+                    result = it.getString(index)
+                }
             }
         }
-        return fileName
+        return result
     }
 
     /**

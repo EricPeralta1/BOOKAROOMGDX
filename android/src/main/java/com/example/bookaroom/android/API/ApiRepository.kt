@@ -1,8 +1,11 @@
 package com.example.bookaroom.android.API
 
+import android.content.Context
 import android.net.Uri
+import android.provider.OpenableColumns
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.User
+import com.example.bookaroom.android.Objects.ImageUploadRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
@@ -32,17 +35,14 @@ object ApiRepository {
         if (response.isSuccessful) response.body() else null
     }
 
-    suspend fun createEvent(event: Event, imageUri: Uri?): Event? {
-        return withContext(Dispatchers.IO) {
-            val eventDetails = RequestBody.create(MediaType.parse("application/json"), event.toJson())
-            val imagePart = imageUri?.let {
-                val file = File(it.path!!)
-                val requestBody = RequestBody.create(MediaType.parse("image/*"), file)
-                MultipartBody.Part.createFormData("image", file.name, requestBody)
-            }
+    suspend fun createEvent(event: Event): Event? = withContext(Dispatchers.IO) {
+        val response = apiService.createEvent(event)
+        if (response.isSuccessful) response.body() else null
+    }
 
-            val response = apiService.createEvent(eventDetails, imagePart)
-            if (response.isSuccessful) response.body() else null
-        }
+    suspend fun uploadEventImage(imageName: String, base64Image: String): Boolean = withContext(Dispatchers.IO) {
+        val request = ImageUploadRequest(imageName, base64Image)
+        val response = apiService.uploadEventImage(request)
+        return@withContext response.isSuccessful
     }
 }

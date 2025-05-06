@@ -2,6 +2,7 @@ package com.example.bookaroom.android.API
 
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.User
+import com.example.bookaroom.android.Objects.ImageUploadRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -13,18 +14,17 @@ import retrofit2.http.Part
 
 interface ApiService {
 
-    @GET("esdeveniments")
+    @GET("api/esdeveniments")
     suspend fun getEvents(): Response<List<Event>>
 
-    @GET("usuaris")
+    @GET("api/usuaris")
     suspend fun getUsers(): Response<List<User>>
 
-    @POST("usuaris")
+    @POST("api/usuaris")
     suspend fun createUser(@Body user: User): Response<User>
 
-    @Multipart
-    @POST("events")
-    suspend fun createEvent(
-        @Part("eventDetails") eventDetails: RequestBody,
-        @Part image: MultipartBody.Part?): Response<Event>
-}
+    @POST("api/esdeveniments")
+    suspend fun createEvent(@Body event: Event): Response<Event>
+
+    @POST("uploadImage")
+    suspend fun uploadEventImage(@Body request: ImageUploadRequest): Response<Unit>}

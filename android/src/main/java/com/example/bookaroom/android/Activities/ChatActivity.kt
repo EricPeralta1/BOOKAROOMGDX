@@ -19,6 +19,7 @@ import com.example.bookaroom.Objects.loadChatFromJSON
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.Objects.loadUsersFromJSON
 import com.example.bookaroom.R
+import com.example.bookaroom.android.API.ApiRepository.getUsers
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -78,7 +79,6 @@ class ChatActivity : AppCompatActivity() {
 
         activateNavBar()
         showChatWarning()
-        loadChat()
         setupSocket()
 
         val send = findViewById<ImageView>(R.id.sendIc)
@@ -149,7 +149,7 @@ class ChatActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewMessages)
                         recyclerView.layoutManager = LinearLayoutManager(this@ChatActivity)
-                        val users = loadUsersFromJSON(loadJsonFromRaw(this@ChatActivity, R.raw.users)!!)
+                        val users = getUsers()!!
                         val messagesAdapter = ChatAdapter(updatedMessages, users)
                         recyclerView.adapter = messagesAdapter
                         recyclerView.scrollToPosition(updatedMessages.size - 1)
@@ -212,7 +212,6 @@ class ChatActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
-        loadChat()
 
     }
 

@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +19,10 @@ import com.example.bookaroom.Objects.loadEventsFromJSON
 import com.example.bookaroom.Objects.loadJsonFromRaw
 import com.example.bookaroom.Objects.loadTicketsFromJSON
 import com.example.bookaroom.R
+import com.example.bookaroom.android.API.ApiRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
@@ -93,41 +96,30 @@ class InventoryActivity : AppCompatActivity() {
      * Muestra la lista de reservas que el usuario posea.
      */
     private fun showCurrentReservas() {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        lifecycleScope.launch {
+            val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+            recyclerView.layoutManager = LinearLayoutManager(this@InventoryActivity, LinearLayoutManager.HORIZONTAL, false)
 
-        val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(recyclerView)
+            val snapHelper = LinearSnapHelper()
+            snapHelper.attachToRecyclerView(recyclerView)
 
-        val eventList = (loadEventsFromJSON(loadJsonFromRaw(this, R.raw.events)!!))
-        var tickets : ArrayList<Ticket> = ArrayList()
+            val eventList = ApiRepository.getEvents()!!
+            val tickets = ApiRepository.getTicketsFromUser(user.getIdUser())!!
+            val activatedTickets = chargeActivatedTickets(tickets)
 
-        val file = File(this.filesDir, "ticket.json")
-        if (file.exists()) {
-            val inputStream = FileInputStream(file)
-            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-            val jsonText = bufferedReader.use { it.readText() }
+            val ticketAdapter = TicketAdapter(activatedTickets,eventList, this@InventoryActivity) { event ->
+                onTicketClick(event)
+            }
 
-            val gson = Gson()
-            val projectObjects = object : TypeToken<List<Ticket>>() {}.type
-            tickets = gson.fromJson(jsonText, projectObjects)
-        } else {
-            tickets = loadTicketsFromJSON(loadJsonFromRaw(this, R.raw.tickets)!!)
+            recyclerView.adapter = ticketAdapter
         }
-        val activatedTickets = chargeActivatedTickets(tickets)
-
-        val ticketAdapter = TicketAdapter(activatedTickets,eventList, this) { event ->
-            onTicketClick(event)
-        }
-
-        recyclerView.adapter = ticketAdapter
     }
 
     /**
      * Permite cargar solo aquellas reservas que esten activas.
      */
-    private fun chargeActivatedTickets(ticketList : ArrayList<Ticket>) : ArrayList<Ticket>{
-        val activatedTickets : ArrayList<Ticket> = ArrayList()
+    private fun chargeActivatedTickets(ticketList : List<Ticket>) : List<Ticket>{
+        val activatedTickets = mutableListOf<Ticket>()
 
         for (ticket in ticketList){
             if (ticket.getEstat() == 1){
@@ -145,6 +137,7 @@ class InventoryActivity : AppCompatActivity() {
         val detailsTicketFrag = InventoryDetailsFrag()
         val bundle = Bundle()
         bundle.putParcelable("ticket", ticket)
+        bundle.putParcelable("user", user)
         detailsTicketFrag.arguments = bundle
 
         supportFragmentManager.beginTransaction()
@@ -159,7 +152,6 @@ class InventoryActivity : AppCompatActivity() {
      */
     private fun initializeFragment() {
         val noDetailsFrag = EmptyInventoryFrag()
-
         supportFragmentManager.beginTransaction()
             .replace(R.id.selectedReservaView, noDetailsFrag)
             .addToBackStack(null)

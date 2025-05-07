@@ -9,6 +9,7 @@
     import com.badlogic.gdx.utils.Array;
     import com.badlogic.gdx.utils.ScreenUtils;
 
+    import java.util.List;
 
 
     /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -20,9 +21,11 @@
         private float seatSize = 120;
         private int i = 1;
         private SeatSelectionNotifier notifier;
+        private List<Integer> reservedSeats;
 
-        public Main(SeatSelectionNotifier notifier) {
+        public Main(SeatSelectionNotifier notifier, List<Integer> reservedSeats) {
             this.notifier = notifier;
+            this.reservedSeats = reservedSeats;
         }
 
         /**
@@ -48,12 +51,10 @@
                     float y = startY + (rows - 1 - row) * (seatSize + spacing); // Top to bottom
 
                     SeatState state = SeatState.AVAILABLE;
-                    if ((row == 0 && col != 3) ||
-                        (row == 1 && (col == 0 || col == 6)) ||
-                        (row == 5 && col != 2 && col != 4)) {
-                        state = SeatState.RESERVED;
-                    } else if (row == 0 && col == 3) {
-                        state = SeatState.SELECTED;
+                    for (int seatnumber : reservedSeats){
+                        if (seatnumber == i){
+                            state = SeatState.RESERVED;
+                        }
                     }
 
                     seats.add(new Seat(x, y, seatSize, state, 1, 1, i, 1));

@@ -66,6 +66,10 @@ data class Event(
         return user_id
     }
 
+    fun getIdEvent(): Int {
+        return event_id
+    }
+
     fun toJson(): String {
         return Gson().toJson(this)
     }
@@ -73,11 +77,21 @@ data class Event(
 
 
     override fun describeContents(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        TODO("Not yet implemented")
+        dest.writeInt(event_id)
+        dest.writeInt(room_id)
+        dest.writeInt(user_id)
+        dest.writeInt(capacity)
+        dest.writeLong(start_date.time)
+        dest.writeLong(end_date.time)
+        dest.writeFloat(price)
+        dest.writeString(name)
+        dest.writeString(description)
+        dest.writeString(event_image)
+        dest.writeInt(active)
     }
 
     companion object CREATOR : Parcelable.Creator<Event> {

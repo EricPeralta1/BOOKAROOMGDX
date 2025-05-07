@@ -9,9 +9,13 @@ import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.example.bookaroom.Main;
 import com.example.bookaroom.SeatSelectionNotifier;
 
+import java.util.List;
+
 public class GameFragment extends AndroidFragmentApplication
 {
     private SeatSelectionListener seatSelectionListener;
+    private List<Integer> reservedSeats;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -24,7 +28,7 @@ public class GameFragment extends AndroidFragmentApplication
             }
         };
 
-        return initializeForView(new Main(notifier));
+        return initializeForView(new Main(notifier, reservedSeats));
     }
 
     public void setSeatSelectionListener(SeatSelectionListener listener) {
@@ -33,6 +37,10 @@ public class GameFragment extends AndroidFragmentApplication
 
     public interface SeatSelectionListener {
         void onSeatSelected(int seatNumber);
+    }
+
+    public void setReservedSeats(List<Integer> reservedSeats) {
+        this.reservedSeats = reservedSeats;
     }
 
 }

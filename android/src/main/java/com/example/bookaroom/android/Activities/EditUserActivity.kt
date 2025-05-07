@@ -7,10 +7,18 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.R
+import com.example.bookaroom.android.API.ApiRepository
+import com.example.bookaroom.android.API.ApiRepository.getUsers
+import com.example.bookaroom.android.Activities.LoginActivity
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 class EditUserActivity  : AppCompatActivity() {
@@ -79,6 +87,8 @@ class EditUserActivity  : AppCompatActivity() {
         val confirmPass : String = findViewById<EditText>(R.id.confirmPasswordEditText).text.toString()
 
         val editedUser = user
+        user.setActive(1)
+
         if (!name.isEmpty()){
             editedUser.setNom(name)
         }
@@ -92,9 +102,20 @@ class EditUserActivity  : AppCompatActivity() {
             editedUser.setPass(pass)
         }
 
-        val gson = Gson()
-        val userJSON = gson.toJson(user)
-        userJSON.toString()
+        lifecycleScope.launch {
+            try {
+                val updateSuccessful = ApiRepository.updateUser(editedUser.getIdUser(), editedUser)
+                if (updateSuccessful) {
+                    Toast.makeText(applicationContext, "User updated successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(applicationContext, "Failed to update user", Toast.LENGTH_SHORT).show()
+                }
+            }catch (e: Exception)
+            {
+                println("API Connexion Error")
+            }
+        }
+
     }
 
     /**

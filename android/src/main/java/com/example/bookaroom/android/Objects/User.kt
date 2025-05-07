@@ -10,7 +10,7 @@ class User(
     private var email : String,
     private var password : String,
     private val role : String,
-    private val active : Int
+    private var active : Int
     ) : Parcelable {
 
         constructor(parcel : Parcel) : this(
@@ -60,6 +60,9 @@ class User(
     fun setPass(pass: String) {
         this.password = pass
     }
+    fun setActive(active: Int) {
+        this.active = active
+    }
 
 
     override fun describeContents(): Int {
@@ -73,6 +76,7 @@ class User(
         dest.writeString(email)
         dest.writeString(password)
         dest.writeString(role)
+        dest.writeInt(active)
     }
 
 

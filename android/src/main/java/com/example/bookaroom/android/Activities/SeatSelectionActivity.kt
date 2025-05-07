@@ -7,17 +7,24 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.toColorInt
+import androidx.lifecycle.lifecycleScope
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication
+import com.example.bookaroom.Objects.Event
+import com.example.bookaroom.Objects.Ticket
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.R
+import com.example.bookaroom.android.API.ApiRepository
 import com.example.bookaroom.android.GDX.GameFragment
+import kotlinx.coroutines.launch
 
 
 class SeatSelectionActivity : AppCompatActivity(), AndroidFragmentApplication.Callbacks  {
 
     private lateinit var selectedSeatTextView: TextView
     private lateinit var user : User
+    private lateinit var selectedEvent : Event
+    private var reservedSeats = mutableListOf<Int>()
+    private var currentSeatNumber : Int = 0
 
 
     /**
@@ -38,27 +45,53 @@ class SeatSelectionActivity : AppCompatActivity(), AndroidFragmentApplication.Ca
 
         selectedSeatTextView = findViewById(R.id.selectedSeatText)
         user = intent.getParcelableExtra<User>("user")!!
+        selectedEvent = intent?.getParcelableExtra<Event>("event")!!
 
-
-        val libgdxFragment = GameFragment()
-        libgdxFragment.setSeatSelectionListener(object : GameFragment.SeatSelectionListener {
-            @SuppressLint("SetTextI18n")
-            override fun onSeatSelected(seatNumber: Int) {
-                selectedSeatTextView.text = getString(R.string.selectedButacaString) + "$seatNumber"
+        lifecycleScope.launch {
+            val tickets = ApiRepository.getTicketsFromEvent(selectedEvent.event_id)!!
+            for (ticket in tickets){
+                reservedSeats.add(ticket.getId())
             }
-        })
+            val libgdxFragment = GameFragment()
+            libgdxFragment.setReservedSeats(reservedSeats)
+            libgdxFragment.setSeatSelectionListener(object : GameFragment.SeatSelectionListener {
+                @SuppressLint("SetTextI18n")
+                override fun onSeatSelected(seatNumber: Int) {
+                    selectedSeatTextView.text = getString(R.string.selectedButacaString) + "$seatNumber"
+                    currentSeatNumber = seatNumber
+                }
+            })
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.libGDXView, libgdxFragment)
-            .commit()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.libGDXView, libgdxFragment)
+                .commit()
 
-        val returnButton = findViewById<TextView>(R.id.cancelSeatReservation)
-        returnButton.setOnClickListener {
-            val intent = Intent(this, SearchEventActivity::class.java)
-            intent.putExtra("user", user)
-            startActivity(intent)
-            finish()
+            val returnButton = findViewById<TextView>(R.id.cancelSeatReservation)
+            returnButton.setOnClickListener {
+                val intent = Intent(this@SeatSelectionActivity, SearchEventActivity::class.java)
+                intent.putExtra("user", user)
+                startActivity(intent)
+                finish()
+            }
         }
+
+        val makeReserva = findViewById<TextView>(R.id.makeReservaButton)
+        makeReserva.setOnClickListener {
+            makeReservation()
+        }
+
+    }
+
+    private fun makeReservation() {
+        lifecycleScope.launch {
+            val newTicket = Ticket(0, user.getIdUser(), selectedEvent.getIdEvent(), currentSeatNumber, 1)
+            ApiRepository.createReserva(newTicket)
+        }
+
+        val intent = Intent(this, InventoryActivity::class.java)
+        intent.putExtra("user", user)
+        startActivity(intent)
+        finish()
     }
 
     override fun exit() {

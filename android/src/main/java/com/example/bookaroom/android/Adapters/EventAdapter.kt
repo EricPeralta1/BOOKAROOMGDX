@@ -43,32 +43,6 @@ class EventAdapter(private val eventList: List<Event>, private val context: Cont
         }
     }
 
-    fun hexStringToByteArray(hex: String): ByteArray {
-        var cleanedHex = hex.replace("0x", "").replace("\\s".toRegex(), "")
-        if (cleanedHex.length % 2 != 0) {
-            cleanedHex = "0$cleanedHex"
-        }
-
-        val len = cleanedHex.length
-        val data = ByteArray(len / 2)
-        for (i in 0 until len step 2) {
-            data[i / 2] = ((Character.digit(cleanedHex[i], 16) shl 4) + Character.digit(cleanedHex[i + 1], 16)).toByte()
-        }
-        return data
-    }
-
-    fun getBitmapFromHex(hex: String): Bitmap? {
-        val cleanedHex = hex.replace("0x", "").replace("\\s".toRegex(), "")
-
-        try {
-            val decodedBytes = hexStringToByteArray(cleanedHex)
-
-            return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return null
-        }
-    }
 
     override fun getItemCount(): Int = eventList.size
 }

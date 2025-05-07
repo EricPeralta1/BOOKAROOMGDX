@@ -4,11 +4,11 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class Ticket(
-    private val id_entrada: Int,
-    private val id_usuari: Int,
-    private val id_esdeveniment: Int,
-    private val id_butaca: Int,
-    private var estat:Int
+    private val ticket_id: Int,
+    private val user_id: Int,
+    private val event_id: Int,
+    private val seat_id: Int,
+    private var status:Int
 ) : Parcelable{
 
     constructor(parcel: Parcel) : this(
@@ -20,27 +20,35 @@ class Ticket(
   )
 
     fun getIdEvent() : Int{
-        return id_esdeveniment
+        return event_id
     }
 
     fun getEstat() : Int{
-        return estat
+        return status
     }
 
     fun getId() : Int{
-        return id_entrada
+        return ticket_id
     }
 
     fun setId(id: Int) {
-        this.estat = id
+        this.status = id
+    }
+
+    fun setStatus(status: Int) {
+        this.status = status
     }
 
     override fun describeContents(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        TODO("Not yet implemented")
+        dest.writeInt(ticket_id)
+        dest.writeInt(user_id)
+        dest.writeInt(event_id)
+        dest.writeInt(seat_id)
+        dest.writeInt(status)
     }
 
     companion object CREATOR : Parcelable.Creator<Ticket> {

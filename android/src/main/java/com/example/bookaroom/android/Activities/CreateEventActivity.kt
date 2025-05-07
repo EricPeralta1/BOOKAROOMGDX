@@ -118,29 +118,19 @@ class CreateEventActivity  : AppCompatActivity() {
 
                 if (imageUri != null){
                     val fileName = imageUri?.let { getFileName(it) }!!
+                    val filterName = fileName.replace("-" , "")
                     val imageString = imageTransform()!!
-                    val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, " ", 1)
-                    val createdEvent = ApiRepository.createEvent(event)
-
-                    if (createdEvent != null) {
-                        ApiRepository.uploadEventImage(fileName, imageString)
-                        Toast.makeText(applicationContext, "Evento creado exitosamente", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(applicationContext, "Error al crear el evento", Toast.LENGTH_SHORT).show()
-                    }
+                    val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, filterName, 1)
+                    ApiRepository.uploadEventImage(filterName, imageString)
+                    ApiRepository.createEvent(event)
 
                 } else {
                     val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, " ", 1)
-                    val createdEvent = ApiRepository.createEvent(event)
-                    if (createdEvent != null) {
-                        Toast.makeText(applicationContext, "Evento creado exitosamente", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(applicationContext, "Error al crear el evento", Toast.LENGTH_SHORT).show()
-                    }
+                    ApiRepository.createEvent(event)
+
                 }
 
             } catch (e: Exception) {
-                Toast.makeText(applicationContext, "Error de conexión: ${e.message}", Toast.LENGTH_SHORT).show()
                 println("Error de conexión: ${e.message}")
             }
         }

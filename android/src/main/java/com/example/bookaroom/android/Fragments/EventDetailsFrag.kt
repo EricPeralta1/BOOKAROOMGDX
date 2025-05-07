@@ -49,6 +49,7 @@ class EventDetailsFrag : Fragment() {
         reservarButton?.setOnClickListener{
             val intent = Intent(requireContext(), SeatSelectionActivity::class.java)
             intent.putExtra("user", user)
+            intent.putExtra("event", selectedEvent)
             startActivity(intent)
             requireActivity().finish()
         }

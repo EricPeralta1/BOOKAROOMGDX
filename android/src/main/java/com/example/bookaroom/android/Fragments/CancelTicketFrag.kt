@@ -99,7 +99,6 @@ class CancelTicketFrag  : Fragment() {
             val recyclerView = activity?.findViewById<RecyclerView>(R.id.recyclerView)!!
             recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-
             val eventList = ApiRepository.getEvents()!!
             var tickets = ApiRepository.getTicketsFromUser(user.getIdUser())!!
 

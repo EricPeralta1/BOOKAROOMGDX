@@ -51,4 +51,6 @@
     <string name="edituserdetails">EDITAR DETALLES DE USUARIO</string>
     <string name="cancelchanges">Descartar</string>
     <string name="desc">Descripción</string>
+    <string name="recoverPassword">¡Bienvenido! \\n Un administrador ha reiniciado tu contraseña. \\n Introduce una nueva, ¡y acuérdate de ella esta vez!</string>
+    <string name="loadAvailableRooms">Cargar salas disponibles</string>
 </resources>

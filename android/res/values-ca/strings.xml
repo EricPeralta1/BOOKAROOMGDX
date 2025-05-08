@@ -51,4 +51,6 @@
     <string name="edituserdetails">EDITAR DETALLS D\'USUARI</string>
     <string name="cancelchanges">Descartar</string>
     <string name="desc">Description</string>
+    <string name="recoverPassword">Benvingut! \\n Un administrador ha reiniciat la teva contrasenya. \\n Si us plau, crea una nova, i enrecorda\'t aquesta vegada!</string>
+    <string name="loadAvailableRooms">Carregar sales disponibles</string>
 </resources>

@@ -5,17 +5,23 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
+import android.text.Editable
 import android.view.MotionEvent
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.SeekBar
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.R
 import com.example.bookaroom.android.API.ApiRepository
+import com.google.android.gms.common.api.Api
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,9 +61,15 @@ class CreateEventActivity  : AppCompatActivity() {
         }
         activateNavBar()
         initializeCalendars()
+        initializeSeekBar()
         val saveChanges = findViewById<TextView>(R.id.saveChanges)
         saveChanges.setOnClickListener {
             saveEvent()
+        }
+
+        val getRooms = findViewById<TextView>(R.id.availableRooms)
+        getRooms.setOnClickListener {
+            loadAvailableRooms()
         }
     }
 
@@ -104,36 +116,69 @@ class CreateEventActivity  : AppCompatActivity() {
     private fun saveEvent() {
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                val name: String = findViewById<EditText>(R.id.nameEditText).text.toString()
-                val aforament: Int = findViewById<EditText>(R.id.surnameEditText).text.toString().toInt()
-                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                val startDate: String = findViewById<EditText>(R.id.startDateET).text.toString()
-                val filterStartDate = dateFormat.parse(startDate)
-                val endDate: String = findViewById<EditText>(R.id.endDateET).text.toString()
-                val filterEndDate = dateFormat.parse(endDate)!!
-                val sala: Int = findViewById<EditText>(R.id.salaET).text.toString().toInt()
-                val preu: Float = findViewById<EditText>(R.id.priceET).text.toString().toFloat()
-                val description : String = findViewById<EditText>(R.id.descEditText).text.toString()
+                val name: Editable = findViewById<EditText>(R.id.nameEditText).text
+                val aforament: CharSequence = findViewById<TextView>(R.id.capacityNumber).text
+                val sala: Any? = findViewById<Spinner>(R.id.salaET).selectedItem
+                val preu: Editable = findViewById<EditText>(R.id.priceET).text
+                val description : Editable = findViewById<EditText>(R.id.descEditText).text
+                val startDate: CharSequence = findViewById<TextView>(R.id.startDateET).text
+                val endDate: CharSequence = findViewById<TextView>(R.id.endDateET).text
 
-
-                if (imageUri != null){
-                    val fileName = imageUri?.let { getFileName(it) }!!
-                    val filterName = fileName.replace("-" , "")
-                    val imageString = imageTransform()!!
-                    val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, filterName, 1)
-                    ApiRepository.uploadEventImage(filterName, imageString)
-                    ApiRepository.createEvent(event)
-
+                if (name.isEmpty() || aforament.isEmpty() || startDate.isEmpty() || endDate.isEmpty() || sala?.equals(null) == true || preu.isEmpty() || description.isEmpty()){
+                    Toast.makeText(this@CreateEventActivity, "Fill all fields before creating an event.", Toast.LENGTH_SHORT).show()
                 } else {
-                    val event = Event(0, sala, user.getIdUser(), aforament, filterStartDate, filterEndDate, preu, name, description, " ", 1)
-                    ApiRepository.createEvent(event)
-
+                    if (preu.toString().toIntOrNull() == null || aforament.toString().toIntOrNull() == null){
+                        Toast.makeText(this@CreateEventActivity, "Both price and capacity must be numbers. Don't enter any letters or special characters.", Toast.LENGTH_SHORT).show()
+                    } else if (aforament.toString().toInt() >= 30 || aforament.toString().toInt() <= 0){
+                        Toast.makeText(this@CreateEventActivity, "Capacity must be from 1 to 30", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        val filterStartDate = dateFormat.parse(startDate.toString())
+                        val filterEndDate = dateFormat.parse(endDate.toString())!!
+                        if (filterEndDate.before(filterStartDate)){
+                            Toast.makeText(this@CreateEventActivity, "End date cannot be before start date", Toast.LENGTH_SHORT).show()
+                        } else if (imageUri != null){
+                            val fileName = imageUri?.let { getFileName(it) }!!
+                            val filterName = fileName.replace("-" , "")
+                            val imageString = imageTransform()!!
+                            val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), filterName, 1)
+                            ApiRepository.uploadEventImage(filterName, imageString)
+                            ApiRepository.createEvent(event)
+                        } else {
+                            val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), " ", 1)
+                            ApiRepository.createEvent(event)
+                        }
+                    }
                 }
-
             } catch (e: Exception) {
-                println("Error de conexión: ${e.message}")
+                println("Error: ${e.message}")
             }
         }
+
+    }
+
+    /**
+     * Inicia SeekBar, una barra deslizante que permite seleccionar la capacidad del evento según el valor
+     * que tenga la barra.
+     */
+    private fun initializeSeekBar() {
+        val seekBar = findViewById<SeekBar>(R.id.capacitySeekBar)
+        seekBar.max = 30
+        seekBar.progress = 0
+
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val price = findViewById<TextView>(R.id.capacityNumber)
+                price.text = progress.toString()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+        })
+
 
     }
 
@@ -167,6 +212,34 @@ class CreateEventActivity  : AppCompatActivity() {
             }
         }
         return result
+    }
+
+    private fun loadAvailableRooms(){
+        lifecycleScope.launch {
+            val startDate = findViewById<TextView>(R.id.startDateET).text.toString()
+            val endDate = findViewById<TextView>(R.id.endDateET).text.toString()
+
+            if (startDate.isEmpty()|| endDate.isEmpty()){
+                Toast.makeText(this@CreateEventActivity, "Make sure to fill dates before checking rooms!", Toast.LENGTH_SHORT).show()
+            } else {
+                val inputDateFormat = SimpleDateFormat("dd/MM/yyyy")
+                val startDateParsed = inputDateFormat.parse(startDate)
+                val endDateParsed = inputDateFormat.parse(endDate)
+                if (endDateParsed.before(startDateParsed)){
+                    Toast.makeText(this@CreateEventActivity, "End date can't be before start!", Toast.LENGTH_SHORT).show()
+                } else {
+                    val rooms = mutableListOf<Int>()
+                    val availableRooms = ApiRepository.getAvailableRooms(startDate, endDate)!!
+                    for (room in availableRooms){
+                        rooms.add(room.getRoomId())
+                    }
+                    val spinner = findViewById<Spinner>(R.id.salaET)
+                    val adapter = ArrayAdapter(this@CreateEventActivity, android.R.layout.simple_spinner_item, rooms)
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    spinner.adapter = adapter
+                }
+            }
+        }
     }
 
     /**

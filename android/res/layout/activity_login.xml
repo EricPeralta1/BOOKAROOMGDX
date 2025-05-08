@@ -64,17 +64,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/forgotButtonText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="20dp"
-        android:text="Forgot Password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PasswordText" />
-
-    <TextView
         android:id="@+id/makeAccountBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

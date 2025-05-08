@@ -40,7 +40,6 @@ class LoginActivity : AppCompatActivity() {
             checkLoginDetails()
         }
 
-        forgotPasswordClick()
         makeAccountClick()
     }
 
@@ -51,19 +50,6 @@ class LoginActivity : AppCompatActivity() {
         val createAccount = findViewById<TextView>(R.id.makeAccountBtn)
         createAccount.setOnClickListener {
             val intent = Intent(this, CreateAccountActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-    }
-
-    /**
-     * Al clicar en el botón de recuperar contraseña, se abre la actividad de recuperar contraseña.
-     */
-    private fun forgotPasswordClick() {
-        val forgotPass = findViewById<TextView>(R.id.forgotButtonText)
-
-        forgotPass.setOnClickListener {
-            val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -85,11 +71,19 @@ class LoginActivity : AppCompatActivity() {
 
                 for (user in userList){
                     if (user.getEmail() == email.text.toString() && user.getPass() == password.text.toString()){
-                        found = true
-                        val intent = Intent(this@LoginActivity, SearchEventActivity::class.java)
-                        intent.putExtra("user", user)
-                        startActivity(intent)
-                        finish()
+                        if (password.text.contains("book")){
+                            found = true
+                            val intent = Intent(this@LoginActivity, ForgotPasswordActivity::class.java)
+                            intent.putExtra("user", user)
+                            startActivity(intent)
+                            finish()
+                        }else {
+                            found = true
+                            val intent = Intent(this@LoginActivity, SearchEventActivity::class.java)
+                            intent.putExtra("user", user)
+                            startActivity(intent)
+                            finish()
+                        }
                     }
                 }
 

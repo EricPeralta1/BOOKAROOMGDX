@@ -1,11 +1,15 @@
 package com.example.bookaroom.android.API
 
 import com.example.bookaroom.Objects.Event
+import com.example.bookaroom.Objects.Room
 import com.example.bookaroom.Objects.Ticket
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.android.Objects.ImageUploadRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object ApiRepository {
     private val apiService = ApiClient.apiService
@@ -67,5 +71,27 @@ object ApiRepository {
     suspend fun cancelEntrada(id: Int, ticket: Ticket): Boolean = withContext(Dispatchers.IO) {
         val response = apiService.cancelEntrada(id, ticket)
         return@withContext response.isSuccessful && response.code() == 204
+    }
+
+    suspend fun getAvailableRooms(startDate: String, endDate: String): List<Room>? {
+        return withContext(Dispatchers.IO) {
+            val inputDateFormat = SimpleDateFormat("dd/MM/yyyy")
+            val outputDateFormat = SimpleDateFormat("yyyy-MM-dd")
+
+            val start = inputDateFormat.parse(startDate)
+            val end = inputDateFormat.parse(endDate)
+
+            val formattedStart = outputDateFormat.format(start)
+            val formattedEnd = outputDateFormat.format(end)
+
+            val startDateFormatted = outputDateFormat.parse(formattedStart)!!
+            val endDateFormatted = outputDateFormat.parse(formattedEnd)!!
+
+            val startSqlDate = java.sql.Date(startDateFormatted.time)
+            val endSqlDate = java.sql.Date(endDateFormatted.time)
+
+            val response = apiService.getAvailableRooms(startSqlDate, endSqlDate)
+            if (response.isSuccessful) response.body() else null
+        }
     }
 }

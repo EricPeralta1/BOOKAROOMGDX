@@ -36,7 +36,7 @@ class TicketAdapter(private val reservas: List<Ticket>, private val events : Lis
         val event = events.find { it.event_id == reserva.getIdEvent() }
 
             holder.ticketName.text = event?.getTitle()
-            holder.ticketRoom.text = "SALA " + event?.getIdSala().toString()
+            holder.ticketRoom.text = "SALA " + event?.getIdSala().toString() + " | BUTACA" + reserva.getSeatId()
             holder.ticketDate.text = event?.getDataInici()?.let { dateFormat.format(it) }
             holder.itemView.setOnClickListener {
                 onItemClick(reserva)

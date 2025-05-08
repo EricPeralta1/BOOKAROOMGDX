@@ -85,6 +85,7 @@ class EditUserActivity  : AppCompatActivity() {
         val email : String = findViewById<EditText>(R.id.emailEditText).text.toString()
         val pass : String = findViewById<EditText>(R.id.endDateET).text.toString()
         val confirmPass : String = findViewById<EditText>(R.id.confirmPasswordEditText).text.toString()
+        var canEdit = true
 
         val editedUser = user
         user.setActive(1)
@@ -99,23 +100,32 @@ class EditUserActivity  : AppCompatActivity() {
             editedUser.setEmail(email)
         }
         if (!pass.isEmpty() && pass == confirmPass){
-            editedUser.setPass(pass)
-        }
-
-        lifecycleScope.launch {
-            try {
-                val updateSuccessful = ApiRepository.updateUser(editedUser.getIdUser(), editedUser)
-                if (updateSuccessful) {
-                    Toast.makeText(applicationContext, "User updated successfully", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(applicationContext, "Failed to update user", Toast.LENGTH_SHORT).show()
-                }
-            }catch (e: Exception)
-            {
-                println("API Connexion Error")
+            if (pass.length < 8){
+                Toast.makeText(applicationContext, "Password must be 8 characters or longer", Toast.LENGTH_SHORT).show()
+                canEdit = false
+            } else if (pass.contains("book")) {
+                Toast.makeText(applicationContext, "There are prohibited characters on the password.", Toast.LENGTH_SHORT).show()
+                canEdit = false
+            } else {
+                editedUser.setPass(pass)
             }
         }
 
+        if (canEdit){
+            lifecycleScope.launch {
+                try {
+                    val updateSuccessful = ApiRepository.updateUser(editedUser.getIdUser(), editedUser)
+                    if (updateSuccessful) {
+                        Toast.makeText(applicationContext, "User updated successfully", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(applicationContext, "Failed to update user", Toast.LENGTH_SHORT).show()
+                    }
+                }catch (e: Exception)
+                {
+                    println("API Connexion Error")
+                }
+            }
+        }
     }
 
     /**

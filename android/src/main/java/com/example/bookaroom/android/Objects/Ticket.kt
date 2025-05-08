@@ -23,6 +23,12 @@ class Ticket(
         return event_id
     }
 
+
+    fun getSeatId() : Int{
+        return seat_id
+    }
+
+
     fun getEstat() : Int{
         return status
     }

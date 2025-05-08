@@ -50,7 +50,9 @@ class SeatSelectionActivity : AppCompatActivity(), AndroidFragmentApplication.Ca
         lifecycleScope.launch {
             val tickets = ApiRepository.getTicketsFromEvent(selectedEvent.event_id)!!
             for (ticket in tickets){
-                reservedSeats.add(ticket.getId())
+                if (ticket.getEstat() == 1){
+                    reservedSeats.add(ticket.getSeatId())
+                }
             }
             val libgdxFragment = GameFragment()
             libgdxFragment.setReservedSeats(reservedSeats)

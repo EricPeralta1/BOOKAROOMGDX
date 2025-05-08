@@ -51,4 +51,6 @@
     <string name="edituserdetails">EDIT USER DETAILS</string>
     <string name="cancelchanges">Cancel</string>
     <string name="desc">Description</string>
+    <string name="recoverPassword">Welcome back! \\n An admin has reseted your password. \\n Please insert a new one, and make sure to remember it!</string>
+    <string name="loadAvailableRooms">Load available rooms</string>
 </resources>

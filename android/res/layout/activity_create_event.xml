@@ -80,6 +80,9 @@
             android:id="@+id/nameEditText"
             android:layout_width="350dp"
             android:layout_height="40dp"
+            android:paddingStart="10sp"
+            android:paddingEnd="10sp"
+            android:fontFamily="@font/outfit_regular"
             android:layout_marginBottom="4dp"
             android:background="@drawable/eventinfo_background"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -90,7 +93,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout10"
-        android:layout_width="wrap_content"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout1"
@@ -99,27 +102,40 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:fontFamily="@font/outfit_bold"
             android:text="@string/capacity"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/surnameEditText"
+            app:layout_constraintBottom_toTopOf="@+id/capacitySeekBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <EditText
-            android:id="@+id/surnameEditText"
-            android:layout_width="350dp"
+        <TextView
+            android:id="@+id/capacityNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/outfit_medium"
+            android:text="0"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/capacitySeekBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+        <SeekBar
+            android:id="@+id/capacitySeekBar"
+            android:layout_width="275dp"
             android:layout_height="40dp"
             android:layout_marginBottom="4dp"
             android:background="@drawable/eventinfo_background"
+            android:progressTint="@color/dark_orange"
+            android:thumbTint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -133,7 +149,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/datainicitextview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -145,10 +161,13 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <EditText
+        <TextView
             android:id="@+id/startDateET"
             android:layout_width="175dp"
             android:layout_height="40dp"
+            android:paddingStart="10sp"
+            android:paddingEnd="10sp"
+            android:fontFamily="@font/outfit_regular"
             android:layout_marginBottom="4dp"
             android:background="@drawable/eventinfo_background"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -167,14 +186,17 @@
             app:layout_constraintBottom_toTopOf="@+id/endDateET"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.773"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintStart_toEndOf="@+id/datainicitextview"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0" />
 
-        <EditText
+        <TextView
             android:id="@+id/endDateET"
             android:layout_width="175dp"
             android:layout_height="40dp"
+            android:paddingStart="10sp"
+            android:paddingEnd="10sp"
+            android:fontFamily="@font/outfit_regular"
             android:layout_marginStart="5dp"
             android:layout_marginBottom="4dp"
             android:background="@drawable/eventinfo_background"
@@ -196,6 +218,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -207,10 +230,26 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <EditText
+        <TextView
+            android:id="@+id/availableRooms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/orange_rectangle"
+            android:text="@string/loadAvailableRooms"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toTopOf="@+id/salaET"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.897"
+            app:layout_constraintStart_toEndOf="@+id/textView" />
+
+        <Spinner
             android:id="@+id/salaET"
             android:layout_width="350dp"
             android:layout_height="40dp"
+            android:paddingStart="10sp"
+            android:paddingEnd="10sp"
+            android:fontFamily="@font/outfit_regular"
             android:layout_marginBottom="4dp"
             android:background="@drawable/eventinfo_background"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -245,6 +284,9 @@
             android:id="@+id/priceET"
             android:layout_width="175dp"
             android:layout_height="37dp"
+            android:paddingStart="10sp"
+            android:paddingEnd="10sp"
+            android:fontFamily="@font/outfit_regular"
             android:layout_marginBottom="4dp"
             android:background="@drawable/eventinfo_background"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -254,6 +296,7 @@
             android:id="@+id/imageSelect"
             android:layout_width="175dp"
             android:layout_height="match_parent"
+            android:src="@drawable/add_image"
             android:background="@drawable/brown_orange_rectangle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -283,6 +326,9 @@
             android:id="@+id/descEditText"
             android:layout_width="350dp"
             android:layout_height="40dp"
+            android:paddingStart="10sp"
+            android:paddingEnd="10sp"
+            android:fontFamily="@font/outfit_regular"
             android:layout_marginBottom="4dp"
             android:background="@drawable/eventinfo_background"
             app:layout_constraintBottom_toBottomOf="parent"

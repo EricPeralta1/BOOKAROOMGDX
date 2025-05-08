@@ -174,8 +174,7 @@ class ManualSearchActivity : AppCompatActivity() {
                 eventList.forEach { event ->
                     var matches = true
 
-                    if (eventName.isNotEmpty() && !event.getTitle()
-                            .contains(eventName, ignoreCase = true)
+                    if (eventName.isNotEmpty() && !event.getTitle().contains(eventName, ignoreCase = true)
                     ) {
                         matches = false
                     }

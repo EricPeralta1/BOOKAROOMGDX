@@ -4,6 +4,8 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.view.MotionEvent
@@ -16,6 +18,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.User
@@ -26,15 +29,20 @@ import com.google.android.gms.common.api.Api
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
 
 class CreateEventActivity  : AppCompatActivity() {
     private lateinit var user : User
     private var imageUri: Uri? = null
+    private val REQUEST_IMAGE_CAPTURE = 2
+    private lateinit var cameraImageUri: Uri
     internal var x1: Float = 0.toFloat()
     internal var x2: Float = 0.toFloat()
     internal var y1: Float = 0.toFloat()
@@ -59,6 +67,26 @@ class CreateEventActivity  : AppCompatActivity() {
             photoPickerIntent.type = "image/*"
             startActivityForResult(photoPickerIntent, 1)
         }
+
+        val cameraSelect = findViewById<TextView>(R.id.cameraButton)
+        cameraSelect.setOnClickListener {
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+            if (takePictureIntent.resolveActivity(packageManager) != null) {
+                val photoFile: File? = createImageFile()
+
+                photoFile?.also {
+                    cameraImageUri = FileProvider.getUriForFile(
+                        this,
+                        "${applicationContext.packageName}.provider",
+                        it
+                                                               )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraImageUri)
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            }
+        }
+
         activateNavBar()
         initializeCalendars()
         initializeSeekBar()
@@ -103,17 +131,31 @@ class CreateEventActivity  : AppCompatActivity() {
         return false
     }
 
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
+    }
+
     /**
      * Al coger una foto de la galeria, la devuelve como resultado y guarda la imagen en
      * el imageView correspondiente. Además, guarda la ruta de la imagen.
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == 1) {
-            val selectedImageUri = data?.data
-            val imageView = findViewById<ImageView>(R.id.imageSelect)
-            imageView.setImageURI(selectedImageUri)
-            imageUri = selectedImageUri
+        val imageView = findViewById<ImageView>(R.id.imageSelect)
+
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                1 -> {
+                    imageUri = data?.data
+                    imageView.setImageURI(imageUri)
+                }
+                REQUEST_IMAGE_CAPTURE -> {
+                    imageUri = cameraImageUri
+                    imageView.setImageURI(imageUri)
+                }
+            }
         }
     }
 
@@ -124,7 +166,6 @@ class CreateEventActivity  : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                var creationSuccess = false
                 val name: Editable = findViewById<EditText>(R.id.nameEditText).text
                 val aforament: CharSequence = findViewById<TextView>(R.id.capacityNumber).text
                 val sala: Any? = findViewById<Spinner>(R.id.salaET).selectedItem
@@ -133,50 +174,27 @@ class CreateEventActivity  : AppCompatActivity() {
                 val startDate: CharSequence = findViewById<TextView>(R.id.startDateET).text
                 val endDate: CharSequence = findViewById<TextView>(R.id.endDateET).text
 
-                if (name.isEmpty() || aforament.isEmpty() || startDate.isEmpty() || endDate.isEmpty() || sala?.equals(null) == true || preu.isEmpty() || description.isEmpty()){
-                    Toast.makeText(this@CreateEventActivity, "Fill all fields before creating an event.", Toast.LENGTH_SHORT).show()
+                if (preu.toString().toIntOrNull() == null || aforament.toString().toIntOrNull() == null){
+                    Toast.makeText(this@CreateEventActivity, "Both price and capacity must be numbers. Don't enter any letters or special characters.", Toast.LENGTH_SHORT).show()
+                } else if (aforament.toString().toInt() >= 30 || aforament.toString().toInt() <= 0){
+                    Toast.makeText(this@CreateEventActivity, "Capacity must be from 1 to 30", Toast.LENGTH_SHORT).show()
                 } else {
-                    if (preu.toString().toIntOrNull() == null || aforament.toString().toIntOrNull() == null){
-                        Toast.makeText(this@CreateEventActivity, "Both price and capacity must be numbers. Don't enter any letters or special characters.", Toast.LENGTH_SHORT).show()
-                    } else if (aforament.toString().toInt() > 30 || aforament.toString().toInt() <= 0){
-                        Toast.makeText(this@CreateEventActivity, "Capacity must be from 1 to 30", Toast.LENGTH_SHORT).show()
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val filterStartDate = dateFormat.parse(startDate.toString())
+                    val filterEndDate = dateFormat.parse(endDate.toString())!!
+                    if (filterEndDate.before(filterStartDate)){
+                        Toast.makeText(this@CreateEventActivity, "End date cannot be before start date", Toast.LENGTH_SHORT).show()
+                    } else if (imageUri != null){
+                        val fileName = imageUri?.let { getFileName(it) }!!
+                        val filterName = fileName.replace("-" , "")
+                        val imageString = imageTransform()!!
+                        val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), filterName, 1)
+                        ApiRepository.uploadEventImage(filterName, imageString)
+                        ApiRepository.createEvent(event)
                     } else {
-                        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                        val filterStartDate = dateFormat.parse(startDate.toString())
-                        val filterEndDate = dateFormat.parse(endDate.toString())!!
-                        if (filterEndDate.before(filterStartDate)){
-                            Toast.makeText(this@CreateEventActivity, "End date cannot be before start date", Toast.LENGTH_SHORT).show()
-                        } else if (imageUri != null){
-                            val fileName = imageUri?.let { getFileName(it) }!!
-                            val filterName = fileName.replace("-" , "")
-                            val imageString = imageTransform()!!
-                            val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), filterName, 1)
-                            ApiRepository.uploadEventImage(filterName, imageString)
-                            ApiRepository.createEvent(event)
-                            Toast.makeText(this@CreateEventActivity, "Event created! Have fun!", Toast.LENGTH_SHORT).show()
-
-                            val intent = Intent(this@CreateEventActivity, SearchEventActivity::class.java)
-                            intent.putExtra("user", user)
-                            startActivity(intent)
-                            finish()
-
-                        } else {
-                            val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), "noimage", 1)
-                            ApiRepository.createEvent(event)
-                            creationSuccess = true
-
-
-                        }
+                        val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), " ", 1)
+                        ApiRepository.createEvent(event)
                     }
-                }
-
-                if (creationSuccess){
-                    Toast.makeText(this@CreateEventActivity, "Event created! Have fun!", Toast.LENGTH_SHORT).show()
-
-                    val intent = Intent(this@CreateEventActivity, SearchEventActivity::class.java)
-                    intent.putExtra("user", user)
-                    startActivity(intent)
-                    finish()
                 }
             } catch (e: Exception) {
                 println("Error: ${e.message}")

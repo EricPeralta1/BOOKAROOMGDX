@@ -2,8 +2,10 @@ package com.example.bookaroom.android.API
 
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.Room
+import com.example.bookaroom.Objects.Seats
 import com.example.bookaroom.Objects.Ticket
 import com.example.bookaroom.Objects.User
+import com.example.bookaroom.Seat
 import com.example.bookaroom.android.Objects.ImageUploadRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -91,6 +93,13 @@ object ApiRepository {
             val endSqlDate = java.sql.Date(endDateFormatted.time)
 
             val response = apiService.getAvailableRooms(startSqlDate, endSqlDate)
+            if (response.isSuccessful) response.body() else null
+        }
+    }
+
+    suspend fun getSeatsFromRoom(roomId : Int): List<Seats>? {
+        return withContext(Dispatchers.IO) {
+            val response = apiService.getSeatsFromRoom(roomId)
             if (response.isSuccessful) response.body() else null
         }
     }

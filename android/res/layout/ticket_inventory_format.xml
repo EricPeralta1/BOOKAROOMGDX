@@ -99,7 +99,7 @@
 
         <TextView
             android:id="@+id/TicketRoom"
-            android:layout_width="100dp"
+            android:layout_width="190dp"
             android:layout_height="30dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="60dp"

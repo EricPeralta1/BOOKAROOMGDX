@@ -53,4 +53,7 @@
     <string name="desc">Descripción</string>
     <string name="recoverPassword">¡Bienvenido! \\n Un administrador ha reiniciado tu contraseña. \\n Introduce una nueva, ¡y acuérdate de ella esta vez!</string>
     <string name="loadAvailableRooms">Cargar salas disponibles</string>
+    <string name="fillallfields">Por favor, rellena todos los campos.</string>
+    <string name="passwordlengthwrong">La contraseña debe tener 8 caràcteres o más.</string>
+    <string name="passwordinvalidcharacters">La contraseña tiene caràcteres inválidos.</string>
 </resources>

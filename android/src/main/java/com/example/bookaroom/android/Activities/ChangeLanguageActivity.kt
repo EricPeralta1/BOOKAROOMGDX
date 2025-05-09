@@ -35,8 +35,34 @@ class ChangeLanguageActivity  : AppCompatActivity() {
 
         activateNavBar()
         changeLanguage()
+        showCurrentLanguage()
     }
 
+    /**
+     * Muestra el idioma actual en función del idioma del dispositivo.
+     */
+    private fun showCurrentLanguage() {
+        val currentLocale = resources.configuration.locales.get(0)
+        val currentLanguage = currentLocale.language
+
+        val spanishButton = findViewById<RadioButton>(R.id.spainLang)
+        val englishButton = findViewById<RadioButton>(R.id.englishLang)
+        val catalanButton = findViewById<RadioButton>(R.id.catalanLang)
+
+        if (currentLanguage == "en") {
+            englishButton.isChecked = true
+
+        } else if (currentLanguage == "ca") {
+            catalanButton.isChecked = true
+
+        } else {
+            spanishButton.isChecked = true
+        }
+    }
+
+    /**
+     * Permite navegar entre actividades al deslizar entre izquierda y derecha.
+     */
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
         when (tochevent.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -71,6 +97,8 @@ class ChangeLanguageActivity  : AppCompatActivity() {
         val spanishButton = findViewById<RadioButton>(R.id.spainLang)
         val englishButton = findViewById<RadioButton>(R.id.englishLang)
         val catalanButton = findViewById<RadioButton>(R.id.catalanLang)
+
+
 
         spanishButton.setOnClickListener{
             englishButton.isChecked = false

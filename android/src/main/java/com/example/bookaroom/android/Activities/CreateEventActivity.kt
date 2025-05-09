@@ -21,6 +21,7 @@ import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.User
 import com.example.bookaroom.R
 import com.example.bookaroom.android.API.ApiRepository
+import com.example.bookaroom.android.Activities.LoginActivity
 import com.google.android.gms.common.api.Api
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -52,8 +53,7 @@ class CreateEventActivity  : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
 
         user = intent.getParcelableExtra<User>("user")!!
-        val imageSelect = findViewById<ImageView>(R.id.imageSelect)
-
+        val imageSelect = findViewById<TextView>(R.id.gallerybutton)
         imageSelect.setOnClickListener {
             val photoPickerIntent = Intent(Intent.ACTION_PICK)
             photoPickerIntent.type = "image/*"
@@ -73,6 +73,9 @@ class CreateEventActivity  : AppCompatActivity() {
         }
     }
 
+    /**
+     * Permite navegar entre actividades al deslizar entre izquierda y derecha.
+     */
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
         when (tochevent.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -100,6 +103,10 @@ class CreateEventActivity  : AppCompatActivity() {
         return false
     }
 
+    /**
+     * Al coger una foto de la galeria, la devuelve como resultado y guarda la imagen en
+     * el imageView correspondiente. Además, guarda la ruta de la imagen.
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == 1) {
@@ -114,8 +121,10 @@ class CreateEventActivity  : AppCompatActivity() {
      * Guarda el evento creado.
      */
     private fun saveEvent() {
+
         CoroutineScope(Dispatchers.Main).launch {
             try {
+                var creationSuccess = false
                 val name: Editable = findViewById<EditText>(R.id.nameEditText).text
                 val aforament: CharSequence = findViewById<TextView>(R.id.capacityNumber).text
                 val sala: Any? = findViewById<Spinner>(R.id.salaET).selectedItem
@@ -129,7 +138,7 @@ class CreateEventActivity  : AppCompatActivity() {
                 } else {
                     if (preu.toString().toIntOrNull() == null || aforament.toString().toIntOrNull() == null){
                         Toast.makeText(this@CreateEventActivity, "Both price and capacity must be numbers. Don't enter any letters or special characters.", Toast.LENGTH_SHORT).show()
-                    } else if (aforament.toString().toInt() >= 30 || aforament.toString().toInt() <= 0){
+                    } else if (aforament.toString().toInt() > 30 || aforament.toString().toInt() <= 0){
                         Toast.makeText(this@CreateEventActivity, "Capacity must be from 1 to 30", Toast.LENGTH_SHORT).show()
                     } else {
                         val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -144,11 +153,30 @@ class CreateEventActivity  : AppCompatActivity() {
                             val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), filterName, 1)
                             ApiRepository.uploadEventImage(filterName, imageString)
                             ApiRepository.createEvent(event)
+                            Toast.makeText(this@CreateEventActivity, "Event created! Have fun!", Toast.LENGTH_SHORT).show()
+
+                            val intent = Intent(this@CreateEventActivity, SearchEventActivity::class.java)
+                            intent.putExtra("user", user)
+                            startActivity(intent)
+                            finish()
+
                         } else {
-                            val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), " ", 1)
+                            val event = Event(0, sala.toString().toInt(), user.getIdUser(), aforament.toString().toInt(), filterStartDate, filterEndDate, preu.toString().toFloat(), name.toString(), description.toString(), "noimage", 1)
                             ApiRepository.createEvent(event)
+                            creationSuccess = true
+
+
                         }
                     }
+                }
+
+                if (creationSuccess){
+                    Toast.makeText(this@CreateEventActivity, "Event created! Have fun!", Toast.LENGTH_SHORT).show()
+
+                    val intent = Intent(this@CreateEventActivity, SearchEventActivity::class.java)
+                    intent.putExtra("user", user)
+                    startActivity(intent)
+                    finish()
                 }
             } catch (e: Exception) {
                 println("Error: ${e.message}")
@@ -182,6 +210,10 @@ class CreateEventActivity  : AppCompatActivity() {
 
     }
 
+    /**
+     * Transforma la imagen a un string de Base64 para enviarla a la API y reconstruirla
+     * y guardarla.
+     */
     private fun imageTransform() : String?{
         return try {
             val inputStream = contentResolver.openInputStream(imageUri!!)
@@ -198,7 +230,9 @@ class CreateEventActivity  : AppCompatActivity() {
         }
     }
 
-
+    /**
+     * Permite coger el nombre de la imagen. Elimina caracteres especiales.
+     */
     private fun getFileName(uri: Uri): String {
         val context = this
         var result = "image.jpg"
@@ -214,6 +248,9 @@ class CreateEventActivity  : AppCompatActivity() {
         return result
     }
 
+    /**
+     * Carga las salas disponibles para hacer el evento entre los dias establecidos.
+     */
     private fun loadAvailableRooms(){
         lifecycleScope.launch {
             val startDate = findViewById<TextView>(R.id.startDateET).text.toString()

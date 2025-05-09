@@ -24,6 +24,7 @@ class SeatSelectionActivity : AppCompatActivity(), AndroidFragmentApplication.Ca
     private lateinit var user : User
     private lateinit var selectedEvent : Event
     private var reservedSeats = mutableListOf<Int>()
+    private var roomSeats = mutableListOf<Int>()
     private var currentSeatNumber : Int = 0
 
 
@@ -47,15 +48,34 @@ class SeatSelectionActivity : AppCompatActivity(), AndroidFragmentApplication.Ca
         user = intent.getParcelableExtra<User>("user")!!
         selectedEvent = intent?.getParcelableExtra<Event>("event")!!
 
+        val makeReserva = findViewById<TextView>(R.id.makeReservaButton)
+        makeReserva.setOnClickListener {
+            makeReservation()
+        }
+
+        initializeGDX()
+        activateNavBar()
+    }
+
+    /**
+     * Inicializa LIBGDX para el respectivo fragment. Recibe las reservas ya hechas y los asientos
+     * correspondientes a dicha sala.
+     */
+    private fun initializeGDX() {
         lifecycleScope.launch {
             val tickets = ApiRepository.getTicketsFromEvent(selectedEvent.event_id)!!
+            val seats = ApiRepository.getSeatsFromRoom(selectedEvent.room_id)!!
             for (ticket in tickets){
                 if (ticket.getEstat() == 1){
                     reservedSeats.add(ticket.getSeatId())
                 }
             }
+            for (seat in seats){
+                roomSeats.add(seat.getSeatId())
+            }
             val libgdxFragment = GameFragment()
             libgdxFragment.setReservedSeats(reservedSeats)
+            libgdxFragment.setRoomSeats(roomSeats)
             libgdxFragment.setSeatSelectionListener(object : GameFragment.SeatSelectionListener {
                 @SuppressLint("SetTextI18n")
                 override fun onSeatSelected(seatNumber: Int) {
@@ -76,14 +96,11 @@ class SeatSelectionActivity : AppCompatActivity(), AndroidFragmentApplication.Ca
                 finish()
             }
         }
-
-        val makeReserva = findViewById<TextView>(R.id.makeReservaButton)
-        makeReserva.setOnClickListener {
-            makeReservation()
-        }
-
     }
 
+    /**
+     * Realiza la reserva. Al acabar, va al inventario.
+     */
     private fun makeReservation() {
         lifecycleScope.launch {
             val newTicket = Ticket(0, user.getIdUser(), selectedEvent.getIdEvent(), currentSeatNumber, 1)

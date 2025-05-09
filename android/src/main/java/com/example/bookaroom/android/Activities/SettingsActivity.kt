@@ -42,6 +42,9 @@ class SettingsActivity : AppCompatActivity() {
         activateOptions()
     }
 
+    /**
+     * Permite navegar entre actividades deslizando a la izquierda o la derecha.
+     */
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
         when (tochevent.action) {
             MotionEvent.ACTION_DOWN -> {

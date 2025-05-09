@@ -34,9 +34,15 @@ class EventAdapter(private val eventList: List<Event>, private val context: Cont
         holder.eventName.text = event.name
         val multimedia = event.getImageByte()
 
-        Glide.with(holder.itemView.context)
-            .load(multimedia)
-            .into(holder.eventImage)
+        if (multimedia.contains("noimage")){
+            Glide.with(holder.itemView.context)
+                .load(R.drawable.default_event_image)
+                .into(holder.eventImage)
+        } else {
+            Glide.with(holder.itemView.context)
+                .load(multimedia)
+                .into(holder.eventImage)
+        }
 
         holder.itemView.setOnClickListener {
             onItemClick(event)

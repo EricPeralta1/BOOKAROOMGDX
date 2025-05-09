@@ -19,6 +19,7 @@ import com.example.bookaroom.android.API.ApiRepository.getEvents
 import com.example.bookaroom.android.API.ApiRepository.getUsers
 import com.example.bookaroom.android.Activities.SearchEventActivity
 import kotlinx.coroutines.launch
+import org.mindrot.jbcrypt.BCrypt
 
 class LoginActivity : AppCompatActivity() {
     private  var userList = ArrayList<User>()
@@ -70,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
                 userList = users?.toMutableList() as ArrayList<User>
 
                 for (user in userList){
-                    if (user.getEmail() == email.text.toString() && user.getPass() == password.text.toString()){
+                    if (user.getEmail() == email.text.toString() && BCrypt.checkpw(password.text.toString(), user.getPass())){
                         if (password.text.contains("book")){
                             found = true
                             val intent = Intent(this@LoginActivity, ForgotPasswordActivity::class.java)

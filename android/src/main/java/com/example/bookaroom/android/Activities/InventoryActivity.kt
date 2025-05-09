@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -56,6 +57,9 @@ class InventoryActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * Permite navegar entre actividades al deslizar entre izquierda y derecha.
+     */
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
         when (tochevent.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -104,8 +108,14 @@ class InventoryActivity : AppCompatActivity() {
             snapHelper.attachToRecyclerView(recyclerView)
 
             val eventList = ApiRepository.getEvents()!!
+
             val tickets = ApiRepository.getTicketsFromUser(user.getIdUser())!!
+
             val activatedTickets = chargeActivatedTickets(tickets)
+            if (!activatedTickets.isEmpty()){
+                val noEventsAvailable = findViewById<ConstraintLayout>(R.id.noBookingsAvailable)
+                noEventsAvailable.visibility = View.GONE
+            }
 
             val ticketAdapter = TicketAdapter(activatedTickets,eventList, this@InventoryActivity) { event ->
                 onTicketClick(event)

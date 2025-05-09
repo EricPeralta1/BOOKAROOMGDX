@@ -2,8 +2,10 @@ package com.example.bookaroom.android.API
 
 import com.example.bookaroom.Objects.Event
 import com.example.bookaroom.Objects.Room
+import com.example.bookaroom.Objects.Seats
 import com.example.bookaroom.Objects.Ticket
 import com.example.bookaroom.Objects.User
+import com.example.bookaroom.Seat
 import com.example.bookaroom.android.Objects.ImageUploadRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -47,6 +49,9 @@ interface ApiService {
 
     @GET("api/Sales/availableRooms/{startDate}/{endDate}")
     suspend fun getAvailableRooms(@Path("startDate") startDate: Date, @Path("endDate") endDate: Date): Response<List<Room>>
+
+    @GET("api/Butacas/fromroom/{roomId}")
+    suspend fun getSeatsFromRoom(@Path("roomId") roomId: Int): Response<List<Seats>>
 }
 
 

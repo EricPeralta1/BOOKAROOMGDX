@@ -22,10 +22,13 @@
         private int i = 1;
         private SeatSelectionNotifier notifier;
         private List<Integer> reservedSeats;
+        private List<Integer> roomSeats;
 
-        public Main(SeatSelectionNotifier notifier, List<Integer> reservedSeats) {
+
+        public Main(SeatSelectionNotifier notifier, List<Integer> reservedSeats, List<Integer> roomSeats) {
             this.notifier = notifier;
             this.reservedSeats = reservedSeats;
+            this.roomSeats = roomSeats;
         }
 
         /**
@@ -38,6 +41,8 @@
             shapeRenderer = new ShapeRenderer();
             seats = new Array<>();
 
+            i = roomSeats.get(0);
+
             float spacing = 5f;
             float totalWidth = cols * seatSize + (cols - 1) * spacing;
             float totalHeight = rows * seatSize + (rows - 1) * spacing;
@@ -45,10 +50,11 @@
             float startX = (Gdx.graphics.getWidth() - totalWidth) / 2f;
             float startY = (Gdx.graphics.getHeight() - totalHeight) / 2f;
 
+
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
                     float x = startX + col * (seatSize + spacing);
-                    float y = startY + (rows - 1 - row) * (seatSize + spacing); // Top to bottom
+                    float y = startY + (rows - 1 - row) * (seatSize + spacing);
 
                     SeatState state = SeatState.AVAILABLE;
                     for (int seatnumber : reservedSeats){

@@ -49,6 +49,9 @@ class EditUserActivity  : AppCompatActivity() {
 
     }
 
+    /**
+     * Permite navegar entre actividades al deslizar entre izquierda y derecha.
+     */
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
         when (tochevent.action) {
             MotionEvent.ACTION_DOWN -> {

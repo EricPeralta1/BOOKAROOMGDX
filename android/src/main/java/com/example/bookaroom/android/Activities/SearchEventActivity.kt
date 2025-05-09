@@ -95,6 +95,9 @@ class SearchEventActivity : AppCompatActivity() {
         fragment.visibility = View.VISIBLE
     }
 
+    /**
+     * Permite navegar entre actividades al deslizar entre derecha y izquierda.
+     */
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
         when (tochevent.action) {
             MotionEvent.ACTION_DOWN -> {

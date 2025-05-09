@@ -52,7 +52,10 @@
     <string name="surname" />
     <string name="edituserdetails" />
     <string name="cancelchanges">cancelchanges</string>
-    <string name="desc">desc\n</string>
+    <string name="desc">desc</string>
     <string name="recoverPassword">recoverPassword</string>
     <string name="loadAvailableRooms">loadAvailableRooms</string>
+    <string name="passwordlengthwrong" />
+    <string name="passwordinvalidcharacters" />
+    <string name="fillallfields">fillallfields</string>
 </resources>

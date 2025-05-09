@@ -87,6 +87,9 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Permite navegar entre actividades al deslizar entre izquierda y derecha.
+     */
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
         when (tochevent.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -169,12 +172,11 @@ class ChatActivity : AppCompatActivity() {
             GlobalScope.launch(Dispatchers.IO) {
                 try {
                     val messageText = findViewById<EditText>(R.id.sendMessageEditText).text.toString()
-                    val users = loadUsersFromJSON(loadJsonFromRaw(this@ChatActivity, R.raw.users)!!)
                     val currentDateTime = LocalDateTime.now()
                     val zonedDateTime = currentDateTime.atZone(ZoneOffset.UTC)
                     val date = Date.from(zonedDateTime.toInstant())
 
-                    val messageObject = Message(1, users[0].getIdUser(), messageText, date, "sent")
+                    val messageObject = Message(1, user.getIdUser(), messageText, date, "sent")
                     val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").create()
 
                     val messageJson = gson.toJson(messageObject)
@@ -195,59 +197,6 @@ class ChatActivity : AppCompatActivity() {
         } catch (exception: IOException) {
             exception.printStackTrace()
         }
-    }
-
-    private fun saveChatToJSON(chatMessages: List<Message>) {
-        val gson = Gson()
-        val chatJson = gson.toJson(chatMessages)
-        val file = File(filesDir, "chat.json")
-
-        try {
-            val outputStream = FileOutputStream(file)
-            val writer = OutputStreamWriter(outputStream)
-            writer.write(chatJson)
-            writer.flush()
-            writer.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-
-    }
-
-    private fun updateChat() {
-        socket = Socket("localhost", 6100)
-
-
-    }
-
-    /**
-     * Carga el chat.
-     */
-    private fun loadChat() {
-        val file = File(this.filesDir, "chat.json")
-        val chatMessages: List<Message>
-
-        if (file.exists()) {
-            val inputStream = FileInputStream(file)
-            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-            val jsonText = bufferedReader.use { it.readText() }
-
-            val gson = Gson()
-            val projectObjects = object : TypeToken<List<Message>>() {}.type
-            chatMessages = gson.fromJson(jsonText, projectObjects)
-        } else {
-            chatMessages = loadChatFromJSON(loadJsonFromRaw(this, R.raw.chat)!!)
-        }
-
-        val users = loadUsersFromJSON(loadJsonFromRaw(this, R.raw.users)!!)
-
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewMessages)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        val messagesAdapter = ChatAdapter(chatMessages, users)
-        recyclerView.adapter = messagesAdapter
-        recyclerView.scrollToPosition(chatMessages.size - 1)
     }
 
     /**
@@ -323,6 +272,9 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Permite encriptar el mensaje para su envio al servidor del chat
+     */
     @OptIn(ExperimentalEncodingApi::class)
     private fun encryptData(plainText: String, key: String): String {
         try {
@@ -345,6 +297,9 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Permite desencriptar los mensajes tras su llegada a la app.
+     */
     @OptIn(ExperimentalEncodingApi::class)
     private fun decryptData(encryptedText: String, key: String): String {
         try {

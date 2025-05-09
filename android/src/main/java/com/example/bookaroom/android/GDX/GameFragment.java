@@ -15,6 +15,7 @@ public class GameFragment extends AndroidFragmentApplication
 {
     private SeatSelectionListener seatSelectionListener;
     private List<Integer> reservedSeats;
+    private List<Integer> roomSeats;
 
 
     @Override
@@ -28,7 +29,7 @@ public class GameFragment extends AndroidFragmentApplication
             }
         };
 
-        return initializeForView(new Main(notifier, reservedSeats));
+        return initializeForView(new Main(notifier, reservedSeats, roomSeats));
     }
 
     public void setSeatSelectionListener(SeatSelectionListener listener) {
@@ -41,6 +42,10 @@ public class GameFragment extends AndroidFragmentApplication
 
     public void setReservedSeats(List<Integer> reservedSeats) {
         this.reservedSeats = reservedSeats;
+    }
+
+    public void setRoomSeats(List<Integer> roomSeats) {
+        this.roomSeats = roomSeats;
     }
 
 }

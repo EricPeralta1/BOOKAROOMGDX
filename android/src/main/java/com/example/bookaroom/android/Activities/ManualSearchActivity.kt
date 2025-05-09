@@ -54,8 +54,6 @@ class ManualSearchActivity : AppCompatActivity() {
 
         activateNavBar()
         loadEvents()
-
-
         initializeSeekBar()
         initializeCalendars()
 
@@ -71,21 +69,30 @@ class ManualSearchActivity : AppCompatActivity() {
         }
 
         val reloadIc = findViewById<ImageView>(R.id.reloadList)
-
         reloadIc.setOnClickListener {
-            loadEvents()
-            val seekBar = findViewById<SeekBar>(R.id.seekBarSearch)
-            seekBar.progress = 0
-
-            val startDate = findViewById<TextView>(R.id.selectStartDate)
-            val endDate = findViewById<TextView>(R.id.SelectEndDate)
-
-            startDate.text = ""
-            endDate.text = ""
-
+            resetEventList()
         }
+
     }
 
+    /**
+     * Al hacer clic en el botón de reiniciar, quita todos los filtros y vuelve a cargar los eventos.
+     */
+    private fun resetEventList() {
+        loadEvents()
+        val seekBar = findViewById<SeekBar>(R.id.seekBarSearch)
+        seekBar.progress = 0
+
+        val startDate = findViewById<TextView>(R.id.selectStartDate)
+        val endDate = findViewById<TextView>(R.id.SelectEndDate)
+
+        startDate.text = ""
+        endDate.text = ""    }
+
+
+    /**
+     * Permite navegar entre actividades al deslizar entre izquierda y derecha.
+     */
     override fun onTouchEvent(tochevent: MotionEvent): Boolean {
         when (tochevent.action) {
             MotionEvent.ACTION_DOWN -> {

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.lifecycleScope
@@ -102,7 +103,12 @@ class CancelTicketFrag  : Fragment() {
             val eventList = ApiRepository.getEvents()!!
             var tickets = ApiRepository.getTicketsFromUser(user.getIdUser())!!
 
+
             val activatedTickets = chargeActivatedTickets(tickets)
+            if (activatedTickets.isEmpty()){
+                val noEventsAvailable = activity?.findViewById<ConstraintLayout>(R.id.noBookingsAvailable)!!
+                noEventsAvailable.visibility = View.VISIBLE
+            }
 
             val ticketAdapter = TicketAdapter(activatedTickets,eventList, requireContext()) { event ->
                 onTicketClick(event)

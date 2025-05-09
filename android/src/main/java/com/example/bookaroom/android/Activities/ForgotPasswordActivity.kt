@@ -40,6 +40,10 @@ class ForgotPasswordActivity: AppCompatActivity() {
         }
     }
 
+    /**
+     * Comprueba que la contraseña cumpla los requisitos. Si no cumple, no
+     * se realiza el guardado.
+     */
     private fun checkPassword(){
         lifecycleScope.launch {
             val password = findViewById<EditText>(R.id.PasswordText).text.toString()
@@ -61,6 +65,9 @@ class ForgotPasswordActivity: AppCompatActivity() {
         }
     }
 
+    /**
+     * Envia al usuario a la actividad principal.
+     */
     private fun returnMain(){
         val intent = Intent(this, SearchEventActivity::class.java)
         intent.putExtra("user", user)
@@ -68,6 +75,9 @@ class ForgotPasswordActivity: AppCompatActivity() {
         finish()
     }
 
+    /**
+     * Encripta la contaseña mediante BCrypt.
+     */
     fun hashPassword(plainPassword: String): String {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt())
     }

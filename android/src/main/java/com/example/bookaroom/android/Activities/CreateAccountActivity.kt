@@ -1,6 +1,8 @@
 package com.example.bookaroom.android.Activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -37,9 +39,19 @@ class CreateAccountActivity : AppCompatActivity() {
             createAccount()
         }
 
+        val returnButton = findViewById<TextView>(R.id.cancelCreation)
+        returnButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
 
     }
 
+    /**
+     * Inicializa el spinner para mostrar los dos tipos de usuarios seleccionables.
+     */
     private fun initializeSpinner() {
         val userTypes = listOf("Common User", "Event Organizer")
         val spinner = findViewById<Spinner>(R.id.userTypeSpinner)
@@ -48,43 +60,58 @@ class CreateAccountActivity : AppCompatActivity() {
         spinner.adapter = adapter
     }
 
+    /**
+     * Crea el nuevo usuario. Comprueba antes que los campos estén todos llenos y la contraseña sea valida.
+     */
     private fun createAccount() {
-
-
         lifecycleScope.launch {
             try {
-                val username = findViewById<EditText>(R.id.UsernameText).text.toString()
-                val surname = findViewById<EditText>(R.id.SurnameText).text.toString()
-                val email = findViewById<EditText>(R.id.emailText).text.toString()
-                val password = findViewById<EditText>(R.id.PasswordTextRg).text.toString()
-                val confirmPassword = findViewById<EditText>(R.id.passwordTextConfirmRg).text.toString()
-                val hashedPassword = hashPassword(confirmPassword)
+                val username = findViewById<EditText>(R.id.UsernameText).text
+                val surname = findViewById<EditText>(R.id.SurnameText).text
+                val email = findViewById<EditText>(R.id.emailText).text
+                val password = findViewById<EditText>(R.id.PasswordTextRg).text
+                val confirmPassword = findViewById<EditText>(R.id.passwordTextConfirmRg).text
                 val userType = findViewById<Spinner>(R.id.userTypeSpinner).selectedItem.toString()
 
 
-                if (confirmPassword != password) {
+                if (username.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()){
+                    Toast.makeText(this@CreateAccountActivity, getString(R.string.fillallfields), Toast.LENGTH_SHORT).show()
+                } else if (password.toString().length < 8){
+                    Toast.makeText(this@CreateAccountActivity, getString(R.string.passwordlengthwrong), Toast.LENGTH_SHORT).show()
+                } else if (password.toString().contains("book")){
+                    Toast.makeText(this@CreateAccountActivity, getString(R.string.passwordinvalidcharacters), Toast.LENGTH_SHORT).show()
+                } else if (confirmPassword.toString() != password.toString()) {
                     Toast.makeText(this@CreateAccountActivity, getString(R.string.passwordNotSame), Toast.LENGTH_SHORT).show()
                 } else {
+                    val hashedPassword = hashPassword(confirmPassword.toString())
                     val users = getUsers()
                     val userList = users?.toMutableList() as ArrayList<User>
 
-                    val user = User(0, username, surname, email, hashedPassword, userType, 1)
-
+                    val user = User(0, username.toString(), surname.toString(), email.toString(), hashedPassword, userType, 1)
                     val createdUser = ApiRepository.createUser(user)
                     if (createdUser != null) {
                         Toast.makeText(this@CreateAccountActivity, "Usuario creado con éxito", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     } else {
                         Toast.makeText(this@CreateAccountActivity, "Error al crear el usuario", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
                 }
-
-
             } catch (e: Exception) {
                 println(e)
             }
         }
+
+
     }
 
+    /**
+     * Encripta la contraseña usando BCrypt
+     */
     fun hashPassword(plainPassword: String): String {
         return BCrypt.hashpw(plainPassword, BCrypt.gensalt())
     }
